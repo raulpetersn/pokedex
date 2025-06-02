@@ -21,8 +21,8 @@ class CardPokemonCell: UICollectionViewCell {
     
     lazy var pokemonImage: UIImageView = {
         let imageView = UIImageView()
+        imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "koffing")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -42,12 +42,10 @@ class CardPokemonCell: UICollectionViewCell {
         contentView.addSubview(pokemonImage)
         contentView.addSubview(nameLabel)
         contentView.addSubview(stackView)
-       
-        radiusTypeView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            pokemonImage.widthAnchor.constraint(equalToConstant: 64),
-            pokemonImage.heightAnchor.constraint(equalToConstant: 64),
+            pokemonImage.widthAnchor.constraint(equalToConstant: 112),
+            pokemonImage.heightAnchor.constraint(equalToConstant: 112),
             pokemonImage.trailingAnchor.constraint(equalTo: trailingAnchor),
             pokemonImage.bottomAnchor.constraint(equalTo: bottomAnchor),
             
@@ -60,11 +58,16 @@ class CardPokemonCell: UICollectionViewCell {
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
         ])
         
-        applyTypePokemon(typeOfPokemon: ["veneno", "grama"])
+//        applyTypePokemon(typeOfPokemon: ["veneno", "grama"])
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(with pokemon: Pokemon) {
+        nameLabel.text = pokemon.name
+        pokemonImage.loadImage(urlString: pokemon.pokemonImage)
     }
     
     func applyTypePokemon(typeOfPokemon: [String]) {
@@ -79,5 +82,14 @@ class CardPokemonCell: UICollectionViewCell {
         typeView.buttonType.setTitle(typePokemon, for: .normal)
         typeView.buttonType.backgroundColor = .init(hex: "61E5C7")
         return typeView
+    }
+    
+    func loadImage(from url: URL) {
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            guard let data, let image = UIImage(data: data) else { return }
+            DispatchQueue.main.async {
+                self.pokemonImage.image = image
+            }
+        }.resume()
     }
 }
