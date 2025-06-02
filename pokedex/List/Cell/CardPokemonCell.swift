@@ -27,9 +27,6 @@ class CardPokemonCell: UICollectionViewCell {
         return imageView
     }()
     
-    lazy var radiusTypeView = RadiusButton()
-    lazy var teste = RadiusButton()
-    
     lazy var stackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -40,7 +37,7 @@ class CardPokemonCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = .systemTeal
+        contentView.backgroundColor = .init(hex: "49D0B0")
         contentView.layer.cornerRadius = 8
         contentView.addSubview(pokemonImage)
         contentView.addSubview(nameLabel)
@@ -63,16 +60,11 @@ class CardPokemonCell: UICollectionViewCell {
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
         ])
         
-        
         applyTypePokemon(typeOfPokemon: ["veneno", "grama"])
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    func configure(with name: String) {
-        nameLabel.text = name
     }
     
     func applyTypePokemon(typeOfPokemon: [String]) {
@@ -85,6 +77,7 @@ class CardPokemonCell: UICollectionViewCell {
     func setupRadiusButton(with typePokemon: String) -> RadiusButton {
         let typeView = RadiusButton()
         typeView.buttonType.setTitle(typePokemon, for: .normal)
+        typeView.buttonType.backgroundColor = .init(hex: "61E5C7")
         return typeView
     }
 }
