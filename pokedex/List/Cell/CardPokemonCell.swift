@@ -76,15 +76,15 @@ class CardPokemonCell: UICollectionViewCell {
     }
     
     func applyTypePokemon(typeOfPokemon: [String]) {
-        typeOfPokemon.forEach { typeName in
-            let eachButton = setupRadiusButton(with: typeName)
+        typeOfPokemon.forEach { typePokemon in
+            let eachButton = setupRadiusButton(with: typePokemon)
             stackView.addArrangedSubview(eachButton)
         }
     }
     
-    func setupRadiusButton(with typeName: String) -> RadiusButton {
+    func setupRadiusButton(with typePokemon: String) -> RadiusButton {
         let typeView = RadiusButton()
-        typeView.buttonType.setTitle(typeName, for: .normal)
+        typeView.buttonType.setTitle(typePokemon, for: .normal)
         return typeView
     }
 }
