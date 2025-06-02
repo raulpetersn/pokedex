@@ -11,9 +11,8 @@ class ListPokemonView: UIView {
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 160, height: 100)
-        layout.minimumLineSpacing = 16
-        layout.minimumInteritemSpacing = 16
+        layout.itemSize = CGSize(width: 180, height: 172)
+        layout.sectionInset = .init(top: 0, left: 16, bottom: 0, right: 16)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .white
@@ -30,7 +29,6 @@ class ListPokemonView: UIView {
     required init?(coder: NSCoder) {
          fatalError("init(coder:) has not been implemented")
      }
-    
     
     func setupCollectionView() {
         self.addSubview(collectionView)

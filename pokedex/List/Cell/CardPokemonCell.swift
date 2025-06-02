@@ -13,22 +13,58 @@ class CardPokemonCell: UICollectionViewCell {
 
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Pokémon"
+        label.text = "Koffing"
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-
+    
+    lazy var pokemonImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(named: "koffing")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    lazy var radiusTypeView = RadiusButton()
+    lazy var teste = RadiusButton()
+    
+    lazy var stackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 32
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.backgroundColor = .systemTeal
         contentView.layer.cornerRadius = 8
+        contentView.addSubview(pokemonImage)
         contentView.addSubview(nameLabel)
-        
+        contentView.addSubview(stackView)
+       
+        radiusTypeView.translatesAutoresizingMaskIntoConstraints = false
+
         NSLayoutConstraint.activate([
-            nameLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            pokemonImage.widthAnchor.constraint(equalToConstant: 64),
+            pokemonImage.heightAnchor.constraint(equalToConstant: 64),
+            pokemonImage.trailingAnchor.constraint(equalTo: trailingAnchor),
+            pokemonImage.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            nameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 16),
+            nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+            
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            stackView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: pokemonImage.leadingAnchor, constant: -16),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
         ])
+        
+        
+        applyTypePokemon(typeOfPokemon: ["veneno", "grama"])
     }
 
     required init?(coder: NSCoder) {
@@ -37,5 +73,18 @@ class CardPokemonCell: UICollectionViewCell {
 
     func configure(with name: String) {
         nameLabel.text = name
+    }
+    
+    func applyTypePokemon(typeOfPokemon: [String]) {
+        typeOfPokemon.forEach { typeName in
+            let eachButton = setupRadiusButton(with: typeName)
+            stackView.addArrangedSubview(eachButton)
+        }
+    }
+    
+    func setupRadiusButton(with typeName: String) -> RadiusButton {
+        let typeView = RadiusButton()
+        typeView.buttonType.setTitle(typeName, for: .normal)
+        return typeView
     }
 }

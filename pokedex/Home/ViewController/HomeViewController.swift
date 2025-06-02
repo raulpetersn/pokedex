@@ -26,7 +26,6 @@ class HomeViewController: UIViewController {
     @objc
     private func goToPokemonDetail() {
         navigationController?.pushViewController(ListPokemonViewController(), animated: true)
-        
     }
 
 }

@@ -12,6 +12,7 @@ class ListPokemonViewController: UIViewController {
     let collectionView = ListPokemonView()
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         collectionView.collectionView.delegate = self
         collectionView.collectionView.dataSource = self
     }
