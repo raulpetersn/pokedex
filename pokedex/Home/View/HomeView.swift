@@ -9,21 +9,21 @@ import UIKit
 
 class HomeView: UIView {
     
-    private lazy var cellButton: UIButton = {
+     lazy var cellButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Celula", for: .normal)
 //        button.addTarget(self, action: #selector(goToCellPreview), for: .touchUpInside)
         return button
     }()
 
-    private lazy var listButton: UIButton = {
+     lazy var listButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("List", for: .normal)
 //        button.addTarget(self, action: #selector(goToList), for: .touchUpInside)
         return button
     }()
 
-    private lazy var detailButton: UIButton = {
+     lazy var detailButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Detalhe do pokemon", for: .normal)
 //        button.addTarget(self, action: #selector(goToPokemonDetail), for: .touchUpInside)
