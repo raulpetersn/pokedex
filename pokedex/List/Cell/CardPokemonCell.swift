@@ -44,18 +44,18 @@ class CardPokemonCell: UICollectionViewCell {
         contentView.addSubview(stackView)
 
         NSLayoutConstraint.activate([
-            pokemonImage.widthAnchor.constraint(equalToConstant: 112),
-            pokemonImage.heightAnchor.constraint(equalToConstant: 112),
+            pokemonImage.widthAnchor.constraint(equalToConstant: 94),
+            pokemonImage.heightAnchor.constraint(equalToConstant: 94),
             pokemonImage.trailingAnchor.constraint(equalTo: trailingAnchor),
             pokemonImage.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            nameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 16),
-            nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+            nameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 8),
+            nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8),
             
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            stackView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: pokemonImage.leadingAnchor, constant: -16),
-            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            stackView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
+            stackView.trailingAnchor.constraint(equalTo: pokemonImage.leadingAnchor, constant: -8),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
         ])
         
 //        applyTypePokemon(typeOfPokemon: ["veneno", "grama"])
