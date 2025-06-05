@@ -28,7 +28,8 @@ struct PokemonResponse: Decodable {
             name: name.capitalized,
             number: pokemonUrl.extractPokemonNumber() ?? 0,
             pokemonImage: pokemonImage,
-            pokemonUrl: url
+            pokemonUrl: url,
+            pokemonType: ["fogo"]
         )
     }
 }

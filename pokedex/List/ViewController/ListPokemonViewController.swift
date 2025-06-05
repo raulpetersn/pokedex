@@ -10,6 +10,7 @@ import UIKit
 class ListPokemonViewController: UIViewController {
     
     private var pokemons: [Pokemon] = []
+    var filterPokemon: [String: [String]] = [:]
     let collectionView = ListPokemonView()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,11 +24,10 @@ class ListPokemonViewController: UIViewController {
         view = collectionView
     }
     
-    func fetchPokemonList(){
+    private func fetchPokemonList() {
         let urlString = "https://pokeapi.co/api/v2/pokemon?limit=151"
         guard let url = URL(string: urlString) else { return }
 
-        
         URLSession.shared.dataTask(with: url) { data, _, error in
             guard let data, error == nil else { return }
             
@@ -36,14 +36,42 @@ class ListPokemonViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.pokemons = decode.results.compactMap { $0.toDomainModel() }
                     self.collectionView.collectionView.reloadData()
+                    self.filterEachTypePokemon()
                 }
-                
-                print("Meu Data request \(decode.results.compactMap { $0.pokemonUrl })")
-                
             } catch {
                 print("Erro na api \(error)")
             }
             
+        }.resume()
+        
+    }
+    
+    
+    private func filterEachTypePokemon() {
+        for pokemon in pokemons {
+            fetchPokemonTypes(with: pokemon.name)
+        }
+    }
+    
+    private func fetchPokemonTypes(with pokemonName: String) {
+        let urlType = "https://pokeapi.co/api/v2/pokemon/\(pokemonName)"
+        guard let url = URL(string: urlType) else { return }
+        
+        
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            guard let data, error == nil else { return }
+    
+            do {
+                let result = try JSONDecoder().decode(PokemonTypeResponse.self, from: data)
+                let eachType = result.types.map { type in type.type.name }
+            
+                DispatchQueue.main.async {
+                    self.filterPokemon[pokemonName] = eachType
+                    self.collectionView.collectionView.reloadData()
+                }
+            } catch {
+                print("error no fetchPokemonTypes \(error)")
+            }
         }.resume()
     }
     
@@ -61,7 +89,14 @@ extension ListPokemonViewController: UICollectionViewDelegate, UICollectionViewD
         }
         
         let poke = pokemons[indexPath.row]
+        
         cell.configure(with: poke)
+        if let type = filterPokemon[poke.name] {
+            pokemons[indexPath.row].pokemonType = type
+            cell.displayPokemonTypeButtons(typeOfPokemon: poke)
+        }
+        cell.updateBackgroundColorByType(pokemon: poke)
+    
         return cell
     }
     

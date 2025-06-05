@@ -42,7 +42,7 @@ enum PokemonType: String, Codable {
         case .electric:
             return UIColor(hex: "#FFCC4D")
         case .grass:
-            return UIColor(hex: "#A1E49A")
+            return UIColor(hex: "#49D0B0")
         case .ice:
             return UIColor(hex: "#96D9D6")
         case .fighting:

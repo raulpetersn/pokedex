@@ -55,12 +55,9 @@ class CardPokemonCell: UICollectionViewCell {
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
             stackView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
             stackView.trailingAnchor.constraint(equalTo: pokemonImage.leadingAnchor, constant: -8),
-            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
         ])
-        
-//        applyTypePokemon(typeOfPokemon: ["veneno", "grama"])
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -70,9 +67,10 @@ class CardPokemonCell: UICollectionViewCell {
         pokemonImage.loadImage(urlString: pokemon.pokemonImage)
     }
     
-    func applyTypePokemon(typeOfPokemon: [String]) {
-        typeOfPokemon.forEach { typePokemon in
-            let eachButton = setupRadiusButton(with: typePokemon)
+    func displayPokemonTypeButtons(typeOfPokemon: Pokemon) {
+        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        typeOfPokemon.pokemonType.forEach { typePokemon in
+            let eachButton = setupRadiusButton(with: typePokemon.capitalized)
             stackView.addArrangedSubview(eachButton)
         }
     }
@@ -82,6 +80,16 @@ class CardPokemonCell: UICollectionViewCell {
         typeView.buttonType.setTitle(typePokemon, for: .normal)
         typeView.buttonType.backgroundColor = .init(hex: "61E5C7")
         return typeView
+    }
+    
+    func updateBackgroundColorByType(pokemon: Pokemon) {
+        guard let firstType = pokemon.pokemonType.first,
+              let pokemonType = PokemonType(rawValue: firstType.lowercased()) else {
+            contentView.backgroundColor = .systemGray 
+            return
+        }
+
+        contentView.backgroundColor = pokemonType.getColor()
     }
     
     func loadImage(from url: URL) {
