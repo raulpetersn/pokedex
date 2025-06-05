@@ -84,10 +84,7 @@ class CardPokemonCell: UICollectionViewCell {
     
     func updateBackgroundColorByType(pokemon: Pokemon) {
         guard let firstType = pokemon.pokemonType.first,
-              let pokemonType = PokemonType(rawValue: firstType.lowercased()) else {
-            contentView.backgroundColor = .systemGray 
-            return
-        }
+              let pokemonType = PokemonType(rawValue: firstType.lowercased()) else { return }
 
         contentView.backgroundColor = pokemonType.getColor()
     }

@@ -57,17 +57,30 @@ class ListPokemonViewController: UIViewController {
         let urlType = "https://pokeapi.co/api/v2/pokemon/\(pokemonName)"
         guard let url = URL(string: urlType) else { return }
         
-        
         URLSession.shared.dataTask(with: url) { data, _, error in
             guard let data, error == nil else { return }
-    
+            
             do {
                 let result = try JSONDecoder().decode(PokemonTypeResponse.self, from: data)
                 let eachType = result.types.map { type in type.type.name }
-            
+                
                 DispatchQueue.main.async {
-                    self.filterPokemon[pokemonName] = eachType
-                    self.collectionView.collectionView.reloadData()
+                    if let index = self.pokemons.firstIndex(where: { $0.name == pokemonName }) {
+                        let currentPokemon = self.pokemons[index]
+                     
+                        let updatedPokemon = Pokemon(
+                            name: currentPokemon.name,
+                            number: currentPokemon.number,
+                            pokemonImage: currentPokemon.pokemonImage,
+                            pokemonUrl: currentPokemon.pokemonUrl,
+                            pokemonType: eachType
+                        )
+                        
+                        self.pokemons[index] = updatedPokemon
+                        
+                        let indexPath = IndexPath(item: index, section: 0)
+                        self.collectionView.collectionView.reloadItems(at: [indexPath])
+                    }
                 }
             } catch {
                 print("error no fetchPokemonTypes \(error)")
@@ -83,20 +96,16 @@ extension ListPokemonViewController: UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardPokemonCell.identifier, for: indexPath) as? CardPokemonCell
-        else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardPokemonCell.identifier, for: indexPath) as? CardPokemonCell else {
             return UICollectionViewCell()
         }
         
         let poke = pokemons[indexPath.row]
-        
         cell.configure(with: poke)
-        if let type = filterPokemon[poke.name] {
-            pokemons[indexPath.row].pokemonType = type
-            cell.displayPokemonTypeButtons(typeOfPokemon: poke)
-        }
+        
+        cell.displayPokemonTypeButtons(typeOfPokemon: poke)
         cell.updateBackgroundColorByType(pokemon: poke)
-    
+        
         return cell
     }
     

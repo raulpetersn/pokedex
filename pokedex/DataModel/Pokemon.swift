@@ -11,7 +11,7 @@ struct Pokemon {
     let number: Int
     let pokemonImage: String
     let pokemonUrl: URL?
-    var pokemonType: [String]
+    let pokemonType: [String]
 }
 
 extension Pokemon {
