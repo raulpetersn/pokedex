@@ -21,6 +21,14 @@ class CardPokemonCell: UICollectionViewCell {
         return label
     }()
     
+    lazy var pokeballBackground: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(named: "pokeball_background")?.withTintColor(.white.withAlphaComponent(0.3))
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
     lazy var pokemonImage: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
@@ -41,15 +49,23 @@ class CardPokemonCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.backgroundColor = .init(hex: "49D0B0")
         contentView.layer.cornerRadius = 8
+        contentView.addSubview(pokeballBackground)
         contentView.addSubview(pokemonImage)
         contentView.addSubview(nameLabel)
         contentView.addSubview(stackView)
+        contentView.clipsToBounds = true
 
         NSLayoutConstraint.activate([
-            pokemonImage.widthAnchor.constraint(equalToConstant: 94),
-            pokemonImage.heightAnchor.constraint(equalToConstant: 94),
-            pokemonImage.trailingAnchor.constraint(equalTo: trailingAnchor),
-            pokemonImage.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            pokeballBackground.widthAnchor.constraint(equalToConstant: 104),
+            pokeballBackground.heightAnchor.constraint(equalToConstant: 104),
+            pokeballBackground.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 16),
+            pokeballBackground.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 16),
+            
+            pokemonImage.widthAnchor.constraint(equalToConstant: 96),
+            pokemonImage.heightAnchor.constraint(equalToConstant: 96),
+            pokemonImage.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            pokemonImage.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
             
             nameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 8),
             nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8),

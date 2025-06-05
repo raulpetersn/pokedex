@@ -11,7 +11,7 @@ class ListPokemonView: UIView {
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 180, height: 172)
+        layout.itemSize = CGSize(width: 180, height: 144)
         layout.sectionInset = .init(top: 0, left: 16, bottom: 0, right: 16)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)

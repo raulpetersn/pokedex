@@ -14,7 +14,7 @@ class RadiusButton: UIView {
         button.titleLabel?.text = "Poison"
         button.titleLabel?.textColor = .white
         button.layer.cornerRadius = 12
-        button.titleLabel?.font = .boldSystemFont(ofSize: 16)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 12)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()

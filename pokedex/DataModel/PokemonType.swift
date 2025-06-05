@@ -34,7 +34,7 @@ enum PokemonType: String, Codable {
     func getColor() -> UIColor {
         switch self {
         case .normal:
-            return UIColor(hex: "#49D0B0")
+            return UIColor(hex: "#A8A77A")
         case .fire:
             return UIColor(hex: "#F7786B")
         case .water:
