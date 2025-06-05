@@ -13,8 +13,8 @@ class RadiusButton: UIView {
         let button = UIButton()
         button.titleLabel?.text = "Poison"
         button.titleLabel?.textColor = .white
-        button.backgroundColor = .blue
         button.layer.cornerRadius = 12
+        button.titleLabel?.font = .boldSystemFont(ofSize: 16)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()

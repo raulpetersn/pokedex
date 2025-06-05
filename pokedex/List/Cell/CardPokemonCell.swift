@@ -15,6 +15,8 @@ class CardPokemonCell: UICollectionViewCell {
         let label = UILabel()
         label.text = "Koffing"
         label.textAlignment = .center
+        label.textColor = .white
+        label.font = .boldSystemFont(ofSize: 24)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -78,7 +80,7 @@ class CardPokemonCell: UICollectionViewCell {
     func setupRadiusButton(with typePokemon: String) -> RadiusButton {
         let typeView = RadiusButton()
         typeView.buttonType.setTitle(typePokemon, for: .normal)
-        typeView.buttonType.backgroundColor = .init(hex: "61E5C7")
+        typeView.buttonType.backgroundColor = .white.withAlphaComponent(0.2)
         return typeView
     }
     
