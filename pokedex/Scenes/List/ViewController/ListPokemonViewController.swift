@@ -88,6 +88,12 @@ class ListPokemonViewController: UIViewController {
         }.resume()
     }
     
+    
+    @objc
+    private func goToDetailView() {
+        navigationController?.pushViewController(DetailViewController(), animated: true)
+    }
+    
 }
 
 extension ListPokemonViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -107,6 +113,10 @@ extension ListPokemonViewController: UICollectionViewDelegate, UICollectionViewD
         cell.updateBackgroundColorByType(pokemon: poke)
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        goToDetailView()
     }
     
     

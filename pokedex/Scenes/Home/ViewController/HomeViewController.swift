@@ -13,6 +13,7 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         goToList()
+        goToDetail()
     }
     
     override func loadView() {
@@ -20,12 +21,21 @@ class HomeViewController: UIViewController {
     }
     
     private func goToList() {
-        homeView.listButton.addTarget(self, action: #selector(goToPokemonDetail), for: .touchUpInside)
+        homeView.listButton.addTarget(self, action: #selector(goToPokedex), for: .touchUpInside)
+    }
+    
+    private func goToDetail() {
+        homeView.detailButton.addTarget(self, action: #selector(goToPokemonDetail), for: .touchUpInside)
+    }
+    
+    @objc
+    private func goToPokedex() {
+        navigationController?.pushViewController(ListPokemonViewController(), animated: true)
     }
     
     @objc
     private func goToPokemonDetail() {
-        navigationController?.pushViewController(ListPokemonViewController(), animated: true)
+        navigationController?.pushViewController(DetailViewController(), animated: true)
     }
 
 }
