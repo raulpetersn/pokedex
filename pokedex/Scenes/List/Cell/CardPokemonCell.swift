@@ -59,8 +59,8 @@ class CardPokemonCell: UICollectionViewCell {
             
             pokeballBackground.widthAnchor.constraint(equalToConstant: 104),
             pokeballBackground.heightAnchor.constraint(equalToConstant: 104),
-            pokeballBackground.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 16),
-            pokeballBackground.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 16),
+            pokeballBackground.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            pokeballBackground.topAnchor.constraint(equalTo: topAnchor, constant: 8),
             
             pokemonImage.widthAnchor.constraint(equalToConstant: 96),
             pokemonImage.heightAnchor.constraint(equalToConstant: 96),
@@ -105,6 +105,7 @@ class CardPokemonCell: UICollectionViewCell {
               let pokemonType = PokemonType(rawValue: firstType.lowercased()) else { return }
 
         contentView.backgroundColor = pokemonType.getColor()
+        self.pokeballBackground.image = pokemonType.getBackgroundImageType()
     }
     
     func loadImage(from url: URL) {

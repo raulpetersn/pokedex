@@ -42,7 +42,6 @@ class DetailView: UIView {
     
     func setupConstrains() {
         NSLayoutConstraint.activate([
-            
             contentView.topAnchor.constraint(equalTo: topAnchor),
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),

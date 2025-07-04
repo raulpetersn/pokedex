@@ -71,6 +71,52 @@ enum PokemonType: String, Codable {
             return UIColor(hex: "#D685AD")
         }
     }
+    
+    func getBackgroundImageType() -> UIImage {
+        
+        let imageString: String
+        
+        switch self {
+        case .bug:
+            imageString = "bug"
+        case .normal:
+            imageString = "normal"
+        case .fire:
+            imageString = "fire"
+        case .water:
+            imageString = "water"
+        case .electric:
+            imageString = "electric"
+        case .grass:
+            imageString = "grass"
+        case .ice:
+            imageString = "ice"
+        case .fighting:
+            imageString = "figher"
+        case .poison:
+            imageString = "poison"
+        case .ground:
+            imageString = "ground"
+        case .flying:
+            imageString = "flying"
+        case .psychic:
+            imageString = "psychic"
+        case .rock:
+            imageString = "rock"
+        case .ghost:
+            imageString = "ghost"
+        case .dragon:
+            imageString = "dragon"
+        case .dark:
+            imageString = "dark"
+        case .steel:
+            imageString = "steel"
+        case .fairy:
+            imageString = "fairy"
+        }
+        
+        return UIImage(named: imageString) ?? UIImage()
+    }
 }
 
 extension UIColor {
