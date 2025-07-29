@@ -24,14 +24,15 @@ final class PokemonService {
         
     }
     
-    func fecthTypeOfPokemons(completion: @escaping (Result<PokemonTypeResponse, Error>) -> Void,
+    func fecthTypeOfPokemons(completion: @escaping (Result<[String], Error>) -> Void,
                              with pokemonName: String) {
         let urlType = "https://pokeapi.co/api/v2/pokemon/\(pokemonName)"
         
         networkClient.fetch(from: urlType, decodeTo: PokemonTypeResponse.self) { result in
             switch result {
             case .success(let response):
-                completion(.success(response))
+                let teste = response.types.map{ eachType in eachType.type.name }
+                completion(.success(teste))
             case .failure(let error):
                 completion(.failure(error))
             }

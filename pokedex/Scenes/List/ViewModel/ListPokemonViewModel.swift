@@ -18,14 +18,17 @@ class ListPokemonViewModel {
 
     func fetchPokemons() {
         service.fetchPokemonList { [weak self] result in
+            guard let self = self else { return}
             switch result {
             case .success(let pokemons):
-                self?.pokemons = pokemons
-                self?.delegate?.didUpdatePokemonList()
+                self.pokemons = pokemons
+                self.delegate?.didUpdatePokemonList()
+                self.filterPokemonType()
             case .failure(let error):
-                self?.delegate?.didFailWithError(error.localizedDescription)
+                self.delegate?.didFailWithError(error.localizedDescription)
             }
         }
+      
     }
 
     func filterPokemonType() {
@@ -37,12 +40,27 @@ class ListPokemonViewModel {
     func fetchPokemonType(pokemonName: String) {
         service.fecthTypeOfPokemons(
             completion: { [weak self] result in
+                guard let self = self else { return }
+                
                 switch result {
                 case .success(let response):
-              
-                    self?.delegate?.didUpdatePokemonList()
+                    print("deu bom no \(response) type")
+
+                    if let index = self.pokemons.firstIndex(where: { $0.name == pokemonName}) {
+                        let currentPokemon = self.pokemons[index]
+                        let updatePokemon = Pokemon(
+                            name: currentPokemon.name,
+                            number: currentPokemon.number,
+                            pokemonImage: currentPokemon.pokemonImage,
+                            pokemonUrl: currentPokemon.pokemonUrl,
+                            pokemonType: response)
+                        
+                        self.pokemons[index] = updatePokemon
+                    }
+                    
+                    self.delegate?.didUpdatePokemonList()
                 case .failure(let error):
-                    print("deu ruim no pokemon type")
+                    print("deu ruim no servico de type \(error)")
                 }
             }, with: pokemonName)
     }
@@ -51,4 +69,9 @@ class ListPokemonViewModel {
     func getTotalOfPokemons() -> Int {
         return pokemons.count
     }
+    
+    func pokemon(at index: Int) -> Pokemon {
+        return pokemons[index]
+    }
+    
 }

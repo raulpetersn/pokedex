@@ -83,6 +83,8 @@ class CardPokemonCell: UICollectionViewCell {
     func configure(with pokemon: Pokemon) {
         nameLabel.text = pokemon.name
         pokemonImage.loadImage(urlString: pokemon.pokemonImage)
+        displayPokemonTypeButtons(typeOfPokemon: pokemon)
+        updateBackgroundColorByType(pokemon: pokemon)
     }
     
     func displayPokemonTypeButtons(typeOfPokemon: Pokemon) {

@@ -10,7 +10,6 @@ import UIKit
 class ListPokemonViewController: UIViewController {
     
     private var pokemons: [Pokemon] = []
-    var filterPokemon: [String: [String]] = [:]
     let listPokemonView = ListPokemonView()
     private var viewModel = ListPokemonViewModel()
     
@@ -18,13 +17,9 @@ class ListPokemonViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         
-        listPokemonView.collectionView.delegate = self
-        listPokemonView.collectionView.dataSource = self
+        setupCollectionView()
         viewModel.delegate = self
         viewModel.fetchPokemons()
-//        viewModel.filterPokemonType()
-//        fetchPokemonList()
-        
     }
     
     override func loadView() {
@@ -34,6 +29,11 @@ class ListPokemonViewController: UIViewController {
     @objc
     private func goToDetailView() {
         navigationController?.pushViewController(DetailViewController(), animated: true)
+    }
+    
+    private func setupCollectionView() {
+        listPokemonView.collectionView.delegate = self
+        listPokemonView.collectionView.dataSource = self
     }
     
 }
@@ -64,11 +64,8 @@ extension ListPokemonViewController: UICollectionViewDelegate, UICollectionViewD
             return UICollectionViewCell()
         }
         
-        let poke = viewModel.pokemons[indexPath.row]
+        let poke = viewModel.pokemon(at: indexPath.row)
         cell.configure(with: poke)
-//        
-//        cell.displayPokemonTypeButtons(typeOfPokemon: poke)
-//        cell.updateBackgroundColorByType(pokemon: poke)
         
         return cell
     }
