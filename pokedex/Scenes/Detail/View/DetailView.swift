@@ -17,10 +17,19 @@ class DetailView: UIView {
         return view
     }()
     
-    lazy var pokemonTitle: UILabel = {
+    lazy var pokemonTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Bulba"
+        label.font = UIFont.systemFont(ofSize: 32)
+        return label
+    }()
+    
+    lazy var pokemonNumberLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Nº 001"
+        label.font = UIFont.systemFont(ofSize: 16)
         return label
     }()
     
@@ -98,6 +107,8 @@ class DetailView: UIView {
     func setupView() {
         addSubview(contentView)
         contentView.addSubview(bottomView)
+        bottomView.addSubview(pokemonTitleLabel)
+        bottomView.addSubview(pokemonNumberLabel)
         bottomView.addSubview(pokemonImage)
         bottomView.addSubview(headerSegmentControl)
         bottomView.addSubview(aboutView)
@@ -120,7 +131,13 @@ class DetailView: UIView {
             bottomView.trailingAnchor.constraint(equalTo: trailingAnchor),
             bottomView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            headerSegmentControl.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 	16),
+            pokemonTitleLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
+            pokemonTitleLabel.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 16),
+            
+            pokemonNumberLabel.topAnchor.constraint(equalTo: pokemonTitleLabel.bottomAnchor, constant: 8),
+            pokemonNumberLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
+            
+            headerSegmentControl.topAnchor.constraint(equalTo: pokemonNumberLabel.bottomAnchor, constant: 16),
             headerSegmentControl.centerXAnchor.constraint(equalTo: centerXAnchor),
             
             pokemonImage.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: -154),
