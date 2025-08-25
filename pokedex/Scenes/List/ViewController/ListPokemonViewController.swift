@@ -26,9 +26,12 @@ class ListPokemonViewController: UIViewController {
         view = listPokemonView
     }
     
-    @objc
-    private func goToDetailView() {
-        navigationController?.pushViewController(DetailViewController(), animated: true)
+    
+    private func goToDetailView(pokemon: Pokemon) {
+        let detailVC = DetailViewController()
+        navigationController?.pushViewController(detailVC, animated: true)
+        detailVC.detailView.displayPokemonTypeButtons(typeOfPokemon: pokemon)
+        
     }
     
     private func setupCollectionView() {
@@ -71,7 +74,8 @@ extension ListPokemonViewController: UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        goToDetailView()
+        let selectRow = viewModel.pokemon(at: indexPath.row)
+        goToDetailView(pokemon: selectRow)
     }
     
     

@@ -33,10 +33,13 @@ class DetailView: UIView {
         return label
     }()
     
+    var pillTypePokemon = PillView()
+    
     lazy var stackViewPokemonType: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
-                            
+        stack.alignment = .fill
+        stack.distribution = .fillProportionally
         return stack
     }()
     
@@ -53,15 +56,6 @@ class DetailView: UIView {
         image.translatesAutoresizingMaskIntoConstraints = false
         image.image = UIImage(named: "koffing")
         return image
-    }()
-    
-    lazy var headerSegmentControl = {
-        let segement = UISegmentedControl(items: ["About", "Base stats", "Evolution", "Moves"])
-        segement.translatesAutoresizingMaskIntoConstraints = false
-        segement.selectedSegmentIndex = 0
-        segement.addTarget(self, action: #selector(didChangeTab), for: .valueChanged)
-        
-        return segement
     }()
 
     let attributeWeight = Atributes(titleAttibute: "Peso", descriptionAtrribute: "33", icon: .weight)
@@ -94,28 +88,29 @@ class DetailView: UIView {
         return view
     }()
     
+
     override init(frame: CGRect) {
         super.init(frame: .zero)
         setupView()
-        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+  
     func setupView() {
         addSubview(contentView)
         contentView.addSubview(bottomView)
         bottomView.addSubview(pokemonTitleLabel)
         bottomView.addSubview(pokemonNumberLabel)
         bottomView.addSubview(pokemonImage)
-        bottomView.addSubview(headerSegmentControl)
+        bottomView.addSubview(stackViewPokemonType)
         bottomView.addSubview(aboutView)
         aboutView.addSubview(stackViewLeft)
         aboutView.addSubview(stackViewRight)
         setupConstrains()
         attributeWeight.translatesAutoresizingMaskIntoConstraints = false
+        
     }
     
     
@@ -136,16 +131,18 @@ class DetailView: UIView {
             
             pokemonNumberLabel.topAnchor.constraint(equalTo: pokemonTitleLabel.bottomAnchor, constant: 8),
             pokemonNumberLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
-            
-            headerSegmentControl.topAnchor.constraint(equalTo: pokemonNumberLabel.bottomAnchor, constant: 16),
-            headerSegmentControl.centerXAnchor.constraint(equalTo: centerXAnchor),
+                        
+            stackViewPokemonType.heightAnchor.constraint(equalToConstant: 40),
+            stackViewPokemonType.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -144),
+            stackViewPokemonType.topAnchor.constraint(equalTo: pokemonNumberLabel.bottomAnchor, constant: 16),
+            stackViewPokemonType.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
             
             pokemonImage.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: -154),
             pokemonImage.centerXAnchor.constraint(equalTo: centerXAnchor),
             pokemonImage.widthAnchor.constraint(equalToConstant: 154),
             pokemonImage.heightAnchor.constraint(equalToConstant: 154),
             
-            aboutView.topAnchor.constraint(equalTo: headerSegmentControl.bottomAnchor, constant: 16),
+            aboutView.topAnchor.constraint(equalTo: stackViewPokemonType.bottomAnchor, constant: 16),
             aboutView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             aboutView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             aboutView.heightAnchor.constraint(equalToConstant: 132),
@@ -160,7 +157,20 @@ class DetailView: UIView {
             stackViewRight.widthAnchor.constraint(equalToConstant: 154),
 
         ])
+    }
         
+    func displayPokemonTypeButtons(typeOfPokemon: Pokemon) {
+        stackViewPokemonType.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        typeOfPokemon.pokemonType.forEach { typePokemon in
+            let eachButton = setupRadiusButton(with: typePokemon.capitalized)
+            stackViewPokemonType.addArrangedSubview(eachButton)
+        }
+    }
+    
+    func setupRadiusButton(with typePokemon: String) -> PillView {
+        let typeView = PillView()
+        typeView.configure(with: typePokemon)
+        return typeView
     }
     
     @objc

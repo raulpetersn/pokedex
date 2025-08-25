@@ -34,41 +34,41 @@ enum PokemonType: String, Codable {
     func getColor() -> UIColor {
         switch self {
         case .normal:
-            return UIColor(hex: "#A8A77A")
+            return UIColor(hex: "#919AA2")
         case .fire:
-            return UIColor(hex: "#F7786B")
+            return UIColor(hex: "#FF9D55")
         case .water:
-            return UIColor(hex: "#96D9F6")
+            return UIColor(hex: "#5090D6")
         case .electric:
-            return UIColor(hex: "#FFCC4D")
+            return UIColor(hex: "#F4D23C")
         case .grass:
-            return UIColor(hex: "#49D0B0")
+            return UIColor(hex: "#63BC5A")
         case .ice:
-            return UIColor(hex: "#96D9D6")
+            return UIColor(hex: "#73CEC0")
         case .fighting:
-            return UIColor(hex: "#C22E28")
+            return UIColor(hex: "#CE416B")
         case .poison:
-            return UIColor(hex: "#A33EA1")
+            return UIColor(hex: "#B567CE")
         case .ground:
-            return UIColor(hex: "#E2BF65")
+            return UIColor(hex: "#D97845")
         case .flying:
-            return UIColor(hex: "#A98FF3")
+            return UIColor(hex: "#89AAE3")
         case .psychic:
-            return UIColor(hex: "#F95587")
+            return UIColor(hex: "#FA7179")
         case .bug:
-            return UIColor(hex: "#A6B91A")
+            return UIColor(hex: "#91C12F")
         case .rock:
-            return UIColor(hex: "#B6A136")
+            return UIColor(hex: "#C5B78C")
         case .ghost:
-            return UIColor(hex: "#735797")
+            return UIColor(hex: "#5269AD")
         case .dragon:
-            return UIColor(hex: "#6F35FC")
+            return UIColor(hex: "#0B6DC3")
         case .dark:
-            return UIColor(hex: "#705746")
+            return UIColor(hex: "#5A5465")
         case .steel:
-            return UIColor(hex: "#B7B7CE")
+            return UIColor(hex: "#5A8EA2")
         case .fairy:
-            return UIColor(hex: "#D685AD")
+            return UIColor(hex: "#EC8FE6")
         }
     }
     
