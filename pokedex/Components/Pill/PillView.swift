@@ -7,23 +7,21 @@
 
 import UIKit
 
-
 enum PillViewSize: CGFloat {
-    case extraSmall = 92
-    case small = 108
-    case medium = 116
-    case big = 124
+    case small = 99
+    case medium = 112
+    case big = 116
+    case none = 32
     
-    static func from(typeCount: Int) -> PillViewSize {
-        switch typeCount {
-        case 5,6: return .small
-        case 7: return .medium
-        case 8: return .big
-        default: return .extraSmall
-        }
+    static func from(totalOfCharacters: Int) -> PillViewSize {
+        switch totalOfCharacters {
+        case 0...4: return .small
+        case 5: return .medium
+        case 6...8: return .big
+        default: return .none
+        }        
     }
 }
-
 
 class PillView: UIView {
    
@@ -37,23 +35,15 @@ class PillView: UIView {
         return view
     }()
     
-    lazy var circleView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 16
-        view.backgroundColor = .white
-        return view
-    }()
-    
     lazy var pokemonIconImage: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(named: "teste")
+        imageView.image = UIImage(named: "grass_color")
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 12
         return imageView
     }()
-    
+        
     lazy var pokemonTypeLbl: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -75,39 +65,36 @@ class PillView: UIView {
     }
     
     func configure(with pokemonType: String) {
-            pokemonTypeLbl.text = pokemonType
-            let size = PillViewSize.from(typeCount: pokemonType.count)
-            widthConstraint.constant = size.rawValue
+        guard let type = PokemonType(rawValue: pokemonType.lowercased()) else { return }
+        let size = PillViewSize.from(totalOfCharacters: pokemonType.count)
+        
+        pokemonTypeLbl.text = pokemonType
+        widthConstraint.constant = size.rawValue
+        contentView.backgroundColor = type.getColor()
+        pokemonIconImage.image = type.getBackgroundImageType(withBackground: true)
     }
     
     func setupView() {
         addSubview(contentView)
-        addSubview(circleView)
-        circleView.addSubview(pokemonIconImage)
+        addSubview(pokemonIconImage)
         addSubview(pokemonTypeLbl)
         
-        setupConstrains()
-   
+        setupConstrains()   
     }
     
     func setupConstrains() {
-        widthConstraint = contentView.widthAnchor.constraint(equalToConstant: PillViewSize.small.rawValue)
+        widthConstraint = contentView.widthAnchor.constraint(equalToConstant: PillViewSize.big.rawValue)
         NSLayoutConstraint.activate([
             widthConstraint,
-            contentView.widthAnchor.constraint(equalToConstant: PillViewSize.small.rawValue),
             contentView.heightAnchor.constraint(equalToConstant: 36),
-            
-            circleView.widthAnchor.constraint(equalToConstant: 32),
-            circleView.heightAnchor.constraint(equalToConstant: 32),
-            circleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            circleView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            
-            pokemonIconImage.centerYAnchor.constraint(equalTo: circleView.centerYAnchor),
-            pokemonIconImage.centerXAnchor.constraint(equalTo: circleView.centerXAnchor),
+            contentView.centerYAnchor.constraint(equalTo: centerYAnchor),
+                
+            pokemonIconImage.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            pokemonIconImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             
             pokemonTypeLbl.leadingAnchor.constraint(equalTo: pokemonIconImage.trailingAnchor, constant: 8),
             pokemonTypeLbl.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
-            pokemonTypeLbl.centerYAnchor.constraint(equalTo: circleView.centerYAnchor)
+            pokemonTypeLbl.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         
         ])
     }
