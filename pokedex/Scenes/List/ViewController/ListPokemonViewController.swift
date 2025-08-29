@@ -30,8 +30,7 @@ class ListPokemonViewController: UIViewController {
     private func goToDetailView(pokemon: Pokemon) {
         let detailVC = DetailViewController()
         navigationController?.pushViewController(detailVC, animated: true)
-        detailVC.detailView.displayPokemonTypeButtons(typeOfPokemon: pokemon)
-        
+        detailVC.detailView.setupTypePill(pokemon: pokemon)
     }
     
     private func setupCollectionView() {

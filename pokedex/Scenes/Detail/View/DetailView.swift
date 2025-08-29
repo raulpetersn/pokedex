@@ -9,7 +9,6 @@ import UIKit
 
 class DetailView: UIView {
     
-    
     lazy var contentView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -33,13 +32,13 @@ class DetailView: UIView {
         return label
     }()
     
-    var pillTypePokemon = PillView()
+    let pokemonBagdeType = PillView()
     
     lazy var stackViewPokemonType: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.alignment = .fill
         stack.distribution = .fillProportionally
+    
         return stack
     }()
     
@@ -133,7 +132,7 @@ class DetailView: UIView {
             pokemonNumberLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
                         
             stackViewPokemonType.heightAnchor.constraint(equalToConstant: 40),
-            stackViewPokemonType.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -144),
+            stackViewPokemonType.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -136),
             stackViewPokemonType.topAnchor.constraint(equalTo: pokemonNumberLabel.bottomAnchor, constant: 16),
             stackViewPokemonType.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
             
@@ -159,44 +158,17 @@ class DetailView: UIView {
         ])
     }
         
-    func displayPokemonTypeButtons(typeOfPokemon: Pokemon) {
+    func setupTypePill(pokemon: Pokemon) {
         stackViewPokemonType.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        typeOfPokemon.pokemonType.forEach { typePokemon in
-            let eachButton = setupRadiusButton(with: typePokemon.capitalized)
-            stackViewPokemonType.addArrangedSubview(eachButton)
+        pokemon.pokemonType.forEach { typePokemon in
+            let eachTypePill = setupPokemonTypePill(with: typePokemon.capitalized)
+            stackViewPokemonType.addArrangedSubview(eachTypePill)
         }
     }
     
-    func setupRadiusButton(with typePokemon: String) -> PillView {
+    func setupPokemonTypePill(with typePokemon: String) -> PillView {
         let typeView = PillView()
         typeView.configure(with: typePokemon)
         return typeView
     }
-    
-    @objc
-    func didChangeTab(_ sender: UISegmentedControl) {
-        switch sender.selectedSegmentIndex {
-        case 0:
-            print("click no indice \(sender.selectedSegmentIndex)")
-        case 1:
-            print("click no indice \(sender.selectedSegmentIndex)")
-        case 2:
-            print("click no indice \(sender.selectedSegmentIndex)")
-        case 3 :
-            print("click no indice \(sender.selectedSegmentIndex)")
-            
-        default: break
-            
-        }
-    }
-    
-    func presentSelectTab(selected index: Int) {
-        switch index {
-        case 0 : break
-            
-        default:
-            break
-        }
-    }
-    
 }
