@@ -16,6 +16,15 @@ class DetailView: UIView {
         return view
     }()
     
+    lazy var scrollView: UIScrollView = {
+        let scroll = UIScrollView()
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        scroll.layer.cornerRadius = 24
+        scroll.showsHorizontalScrollIndicator = false
+        
+        return scroll
+    }()
+    
     lazy var pokemonTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -45,8 +54,10 @@ class DetailView: UIView {
     lazy var bottomView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 24
         view.backgroundColor = .white
+        view.layer.cornerRadius = 24
+        view.clipsToBounds = true
+        view.layer.masksToBounds = true
         return view
     }()
     
@@ -87,7 +98,14 @@ class DetailView: UIView {
         return view
     }()
     
-
+    lazy var weaknessLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Fraquezas"
+        label.font = UIFont.systemFont(ofSize: 18)
+        return label
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: .zero)
         setupView()
@@ -99,19 +117,20 @@ class DetailView: UIView {
   
     func setupView() {
         addSubview(contentView)
-        contentView.addSubview(bottomView)
+        contentView.addSubview(scrollView)
+        scrollView.addSubview(bottomView)
         bottomView.addSubview(pokemonTitleLabel)
         bottomView.addSubview(pokemonNumberLabel)
-        bottomView.addSubview(pokemonImage)
+        contentView.addSubview(pokemonImage)
         bottomView.addSubview(stackViewPokemonType)
         bottomView.addSubview(aboutView)
         aboutView.addSubview(stackViewLeft)
         aboutView.addSubview(stackViewRight)
+        bottomView.addSubview(weaknessLabel)
+
         setupConstrains()
         attributeWeight.translatesAutoresizingMaskIntoConstraints = false
-        
     }
-    
     
     func setupConstrains() {
         NSLayoutConstraint.activate([
@@ -120,27 +139,34 @@ class DetailView: UIView {
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            bottomView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.55),
-            bottomView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            bottomView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            bottomView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            scrollView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.55),
+            scrollView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+
+            bottomView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            bottomView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            bottomView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            bottomView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            bottomView.widthAnchor.constraint(equalTo: widthAnchor),
+            bottomView.heightAnchor.constraint(equalTo: heightAnchor),
             
-            pokemonTitleLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
+            pokemonTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             pokemonTitleLabel.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 16),
-            
+         
             pokemonNumberLabel.topAnchor.constraint(equalTo: pokemonTitleLabel.bottomAnchor, constant: 8),
             pokemonNumberLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
+            
+            pokemonImage.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 144),
+            pokemonImage.centerXAnchor.constraint(equalTo: bottomView.centerXAnchor),
+            pokemonImage.widthAnchor.constraint(equalToConstant: 154),
+            pokemonImage.heightAnchor.constraint(equalToConstant: 154),
                         
             stackViewPokemonType.heightAnchor.constraint(equalToConstant: 40),
             stackViewPokemonType.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -136),
             stackViewPokemonType.topAnchor.constraint(equalTo: pokemonNumberLabel.bottomAnchor, constant: 16),
             stackViewPokemonType.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
-            
-            pokemonImage.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: -154),
-            pokemonImage.centerXAnchor.constraint(equalTo: centerXAnchor),
-            pokemonImage.widthAnchor.constraint(equalToConstant: 154),
-            pokemonImage.heightAnchor.constraint(equalToConstant: 154),
-            
+
             aboutView.topAnchor.constraint(equalTo: stackViewPokemonType.bottomAnchor, constant: 16),
             aboutView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             aboutView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
@@ -154,11 +180,15 @@ class DetailView: UIView {
             stackViewRight.bottomAnchor.constraint(equalTo: aboutView.bottomAnchor),
             stackViewRight.trailingAnchor.constraint(equalTo: aboutView.trailingAnchor),
             stackViewRight.widthAnchor.constraint(equalToConstant: 154),
+            
+            weaknessLabel.topAnchor.constraint(equalTo: aboutView.bottomAnchor, constant: 32),
+            weaknessLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
 
         ])
     }
         
     func setupTypePill(pokemon: Pokemon) {
+        pokemonImage.loadImage(urlString: pokemon.pokemonImage)
         stackViewPokemonType.arrangedSubviews.forEach { $0.removeFromSuperview() }
         pokemon.pokemonType.forEach { typePokemon in
             let eachTypePill = setupPokemonTypePill(with: typePokemon.capitalized)
