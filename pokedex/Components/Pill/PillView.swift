@@ -24,8 +24,11 @@ enum PillViewSize: CGFloat {
 }
 
 class PillView: UIView {
-   
+    
     private var widthConstraint: NSLayoutConstraint!
+    private var iconLeadingConstraint: NSLayoutConstraint!
+    private var labelLeadingConstraint: NSLayoutConstraint!
+    private var labelTrailingConstraint: NSLayoutConstraint!
     
     lazy var contentView: UIView = {
         let view = UIView()
@@ -64,14 +67,16 @@ class PillView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with pokemonType: String) {
+    func configure(with pokemonType: String, isLarge: Bool = false) {
         guard let type = PokemonType(rawValue: pokemonType.lowercased()) else { return }
         let size = PillViewSize.from(totalOfCharacters: pokemonType.count)
         
-        pokemonTypeLbl.text = pokemonType
-        widthConstraint.constant = size.rawValue
+        pokemonTypeLbl.text = pokemonType.capitalized
+        widthConstraint.constant = isLarge ? 156 : size.rawValue
         contentView.backgroundColor = type.getColor()
         pokemonIconImage.image = type.getBackgroundImageType(withBackground: true)
+        
+        updateConstraintsForSize(isLarge: isLarge)
     }
     
     private func setupView() {
@@ -84,20 +89,35 @@ class PillView: UIView {
     
     func setupConstrains() {
         widthConstraint = contentView.widthAnchor.constraint(equalToConstant: PillViewSize.big.rawValue)
+        iconLeadingConstraint = pokemonIconImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8)
+        labelLeadingConstraint = pokemonTypeLbl.leadingAnchor.constraint(equalTo: pokemonIconImage.trailingAnchor, constant: 8)
+        labelTrailingConstraint = pokemonTypeLbl.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8)
+        
         NSLayoutConstraint.activate([
             widthConstraint,
             contentView.heightAnchor.constraint(equalToConstant: 36),
             contentView.centerYAnchor.constraint(equalTo: centerYAnchor),
                 
             pokemonIconImage.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            pokemonIconImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            iconLeadingConstraint,
             
-            pokemonTypeLbl.leadingAnchor.constraint(equalTo: pokemonIconImage.trailingAnchor, constant: 8),
-            pokemonTypeLbl.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+            labelLeadingConstraint,
+            labelTrailingConstraint,
             pokemonTypeLbl.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
-        
         ])
     }
+    
+    private func updateConstraintsForSize(isLarge: Bool) {
+           let leadingConstant: CGFloat = isLarge ? 32 : 8
+           let trailingConstant: CGFloat = isLarge ? -32 : -8
+            
+           iconLeadingConstraint.constant = leadingConstant
+           labelTrailingConstraint.constant = trailingConstant
+
+           UIView.animate(withDuration: 0.3) {
+               self.layoutIfNeeded()
+           }
+       }
     
 }
 

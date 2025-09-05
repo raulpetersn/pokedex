@@ -11,7 +11,7 @@ class PillTypeCell: UICollectionViewCell {
     
     static let identifier = "PillTypeCell"
 
-    private let pillView = PillView()
+    let pillView = PillView()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -29,7 +29,7 @@ class PillTypeCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configureCell(typeName: String) {
-        pillView.configure(with: typeName)
+    func configureCell(typeName: String, isLarge: Bool) {
+        pillView.configure(with: typeName, isLarge: isLarge)
     }
 }

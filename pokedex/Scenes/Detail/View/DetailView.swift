@@ -118,12 +118,20 @@ class DetailView: UIView {
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 156, height: 36)
-        layout.sectionInset = .init(top: 8, left: 16, bottom: 8, right: 16)
+        layout.sectionInset = .init(top: 8, left: 0, bottom: 8, right: 0)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(PillTypeCell.self, forCellWithReuseIdentifier: PillTypeCell.identifier)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        
         return collectionView
+    }()
+    
+    lazy var evolutionsLbl: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = ""
+        return label
     }()
     
     override init(frame: CGRect) {
@@ -148,7 +156,6 @@ class DetailView: UIView {
         aboutView.addSubview(stackViewLeft)
         aboutView.addSubview(stackViewRight)
         bottomView.addSubview(weaknessLabel)
-//        bottomView.addSubview(stackViewWeakness)
         bottomView.addSubview(collectionView)
 
         setupConstrains()
@@ -206,11 +213,6 @@ class DetailView: UIView {
             
             weaknessLabel.topAnchor.constraint(equalTo: aboutView.bottomAnchor, constant: 32),
             weaknessLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
-            
-//            stackViewWeakness.heightAnchor.constraint(equalToConstant: 125),
-//            stackViewWeakness.topAnchor.constraint(equalTo: weaknessLabel.bottomAnchor, constant: -16),
-//            stackViewWeakness.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-//            stackViewWeakness.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
                         
             collectionView.topAnchor.constraint(equalTo: weaknessLabel.bottomAnchor),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),

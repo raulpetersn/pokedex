@@ -60,11 +60,22 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         }
 
         let type = self.viewModel.detailPokemon?.weaknessType[indexPath.item].name ?? "poison"
-        cell.configureCell(typeName: type)
+        UIView.animate(withDuration: 0.3) {
+            cell.pillView.layoutIfNeeded()
+        }
+        cell.configureCell(typeName: type, isLarge: true)
 
         return cell
     }
-
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+           cell.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
+           
+           UIView.animate(withDuration: 0.3) {
+               cell.alpha = 1
+               cell.transform = .identity
+           }
+    }
 }
 
 extension DetailViewController: DetailViewModelDelegate {
