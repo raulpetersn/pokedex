@@ -12,7 +12,6 @@ class DetailView: UIView {
     lazy var contentView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .blue
         return view
     }()
     
@@ -21,7 +20,6 @@ class DetailView: UIView {
         scroll.translatesAutoresizingMaskIntoConstraints = false
         scroll.layer.cornerRadius = 24
         scroll.showsHorizontalScrollIndicator = false
-        
         return scroll
     }()
     
@@ -41,7 +39,7 @@ class DetailView: UIView {
         return label
     }()
     
-    let pokemonBagdeType = PillView()
+    let pokemonWeaknessType = PillView()
     
     lazy var stackViewPokemonType: UIStackView = {
         let stack = UIStackView()
@@ -106,6 +104,28 @@ class DetailView: UIView {
         return label
     }()
     
+    lazy var stackViewWeakness: UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.distribution = .equalCentering
+        stack.backgroundColor = .red
+        stack.axis = .vertical
+        stack.spacing = 20
+        stack.alignment = .center
+        return stack
+    }()
+    
+    lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 156, height: 36)
+        layout.sectionInset = .init(top: 8, left: 16, bottom: 8, right: 16)
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(PillTypeCell.self, forCellWithReuseIdentifier: PillTypeCell.identifier)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        return collectionView
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: .zero)
         setupView()
@@ -116,6 +136,7 @@ class DetailView: UIView {
     }
   
     func setupView() {
+        pokemonWeaknessType.translatesAutoresizingMaskIntoConstraints = false
         addSubview(contentView)
         contentView.addSubview(scrollView)
         scrollView.addSubview(bottomView)
@@ -127,6 +148,8 @@ class DetailView: UIView {
         aboutView.addSubview(stackViewLeft)
         aboutView.addSubview(stackViewRight)
         bottomView.addSubview(weaknessLabel)
+//        bottomView.addSubview(stackViewWeakness)
+        bottomView.addSubview(collectionView)
 
         setupConstrains()
         attributeWeight.translatesAutoresizingMaskIntoConstraints = false
@@ -142,7 +165,7 @@ class DetailView: UIView {
             scrollView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.55),
             scrollView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
             bottomView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             bottomView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
@@ -183,15 +206,24 @@ class DetailView: UIView {
             
             weaknessLabel.topAnchor.constraint(equalTo: aboutView.bottomAnchor, constant: 32),
             weaknessLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
-
+            
+//            stackViewWeakness.heightAnchor.constraint(equalToConstant: 125),
+//            stackViewWeakness.topAnchor.constraint(equalTo: weaknessLabel.bottomAnchor, constant: -16),
+//            stackViewWeakness.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+//            stackViewWeakness.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+                        
+            collectionView.topAnchor.constraint(equalTo: weaknessLabel.bottomAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            collectionView.heightAnchor.constraint(equalToConstant: 144)
         ])
     }
         
-    func setupTypePill(pokemon: Pokemon) {
-        pokemonImage.loadImage(urlString: pokemon.pokemonImage)
+    func setupTypePill(pokemon: PokemonDetail) {
+        pokemonImage.loadImage(urlString: pokemon.imageUrl)
         stackViewPokemonType.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        pokemon.pokemonType.forEach { typePokemon in
-            let eachTypePill = setupPokemonTypePill(with: typePokemon.capitalized)
+        pokemon.types.forEach { typePokemon in
+            let eachTypePill = setupPokemonTypePill(with: typePokemon.rawValue)
             stackViewPokemonType.addArrangedSubview(eachTypePill)
         }
     }

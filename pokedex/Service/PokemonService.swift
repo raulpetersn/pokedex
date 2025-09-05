@@ -24,15 +24,29 @@ final class PokemonService {
         
     }
     
-    func fecthTypeOfPokemons(completion: @escaping (Result<[String], Error>) -> Void,
+    func fecthTypeOfPokemons(completion: @escaping (Result<PokemonDetailResponse, Error>) -> Void,
                              with pokemonName: String) {
         let urlType = "https://pokeapi.co/api/v2/pokemon/\(pokemonName)"
         
-        networkClient.fetch(from: urlType, decodeTo: PokemonTypeResponse.self) { result in
+        networkClient.fetch(from: urlType, decodeTo: PokemonDetailResponse.self) { result in
             switch result {
             case .success(let response):
-                let teste = response.types.map{ eachType in eachType.type.name }
-                completion(.success(teste))
+                completion(.success(response))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func fetchWeaknessByTypePokemon(completion: @escaping (Result<TypeWeaknessResponse, Error>) -> Void,
+                             with pokemonType: String) {
+        let urlType = "https://pokeapi.co/api/v2/type/\(pokemonType)"
+        
+        networkClient.fetch(from: urlType, decodeTo: PokemonWeaknessResponse.self) { result in
+            switch result {
+            case .success(let response):
+                print("caiu no servico de fraqueza \(response)")
+                completion(.success(response.damageRelation))
             case .failure(let error):
                 completion(.failure(error))
             }

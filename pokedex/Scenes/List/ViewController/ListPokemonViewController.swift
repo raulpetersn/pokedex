@@ -27,12 +27,11 @@ class ListPokemonViewController: UIViewController {
     }
     
     
-    private func goToDetailView(pokemon: Pokemon) {
-        let detailVC = DetailViewController()
+    private func goToDetailView(pokemonDetail: PokemonDetail) {
+        let detailVC = DetailViewController(pokemonTypeWeakenss: pokemonDetail)
         navigationController?.pushViewController(detailVC, animated: true)
-        detailVC.detailView.setupTypePill(pokemon: pokemon)
+        
     }
-    
     private func setupCollectionView() {
         listPokemonView.collectionView.delegate = self
         listPokemonView.collectionView.dataSource = self
@@ -65,16 +64,21 @@ extension ListPokemonViewController: UICollectionViewDelegate, UICollectionViewD
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardPokemonCell.identifier, for: indexPath) as? CardPokemonCell else {
             return UICollectionViewCell()
         }
-        
+     
         let poke = viewModel.pokemon(at: indexPath.row)
-        cell.configure(with: poke)
+    
+        /// corrigir esse metodo esta crashando o app
+        if let details = self.viewModel.pokemonsDetails[poke.name] {
+            cell.configure(with: poke, pokeDetail: details)
+        }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectRow = viewModel.pokemon(at: indexPath.row)
-        goToDetailView(pokemon: selectRow)
+        guard let selectedPokemonDetail = viewModel.pokemonsDetails[selectRow.name] else { return }
+        goToDetailView(pokemonDetail: selectedPokemonDetail)
     }
     
     

@@ -7,6 +7,20 @@
 
 import UIKit
 
+struct PokemonWithDetail {
+    let pokemon: Pokemon
+    var detail: PokemonDetail
+}
+
+struct PokemonDetail {
+    let id: Int
+    let name: String
+    let height: Double
+    let weight: Double
+    let types: [PokemonType]
+    let imageUrl: String
+}
+
 enum PokemonType: String, Codable {
     case normal
     case fire

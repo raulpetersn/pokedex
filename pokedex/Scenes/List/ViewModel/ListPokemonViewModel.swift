@@ -15,6 +15,8 @@ class ListPokemonViewModel {
     weak var delegate: ListPokemonViewModelDelegate?
     private let service = PokemonService()
     private(set) var pokemons: [Pokemon] = []
+    private(set) var pokemonsDetails: [String: PokemonDetail] = [:]
+    private(set) var atIndex: Int = 0
 
     func fetchPokemons() {
         service.fetchPokemonList { [weak self] result in
@@ -41,31 +43,18 @@ class ListPokemonViewModel {
         service.fecthTypeOfPokemons(
             completion: { [weak self] result in
                 guard let self = self else { return }
-                
                 switch result {
                 case .success(let response):
-                    print("deu bom no \(response) type")
-
-                    if let index = self.pokemons.firstIndex(where: { $0.name == pokemonName}) {
-                        let currentPokemon = self.pokemons[index]
-                        let updatePokemon = Pokemon(
-                            name: currentPokemon.name,
-                            number: currentPokemon.number,
-                            pokemonImage: currentPokemon.pokemonImage,
-                            pokemonUrl: currentPokemon.pokemonUrl,
-                            pokemonType: response)
-                        
-                        self.pokemons[index] = updatePokemon
-                    }
-                    
+                    let detail = response.toDomainModel()
+                    self.pokemonsDetails[pokemonName] = detail
+//                    self.handlePokemonDetail(with: response.toDomainModel())
                     self.delegate?.didUpdatePokemonList()
                 case .failure(let error):
                     print("deu ruim no servico de type \(error)")
                 }
             }, with: pokemonName)
     }
-    
-    
+
     func getTotalOfPokemons() -> Int {
         return pokemons.count
     }
@@ -74,4 +63,26 @@ class ListPokemonViewModel {
         return pokemons[index]
     }
     
+    func handlePokemonDetail(with pokemonDetail: PokemonDetail) {
+        let pokemonDetail = PokemonInfo(pokemonDetail: pokemonDetail)
+    }
+}
+
+
+struct PokemonInfo {
+    let id: Int
+    let name: String
+    let height: String
+    let weight: String
+    let types: [PokemonType]
+    let imageUrl: String
+    
+    init(pokemonDetail: PokemonDetail) {
+        self.id = pokemonDetail.id
+        self.name = pokemonDetail.name.capitalized
+        self.height = pokemonDetail.height.description
+        self.weight = pokemonDetail.weight.description
+        self.types = pokemonDetail.types
+        self.imageUrl = pokemonDetail.imageUrl
+    }
 }

@@ -74,7 +74,7 @@ class PillView: UIView {
         pokemonIconImage.image = type.getBackgroundImageType(withBackground: true)
     }
     
-    func setupView() {
+    private func setupView() {
         addSubview(contentView)
         addSubview(pokemonIconImage)
         addSubview(pokemonTypeLbl)

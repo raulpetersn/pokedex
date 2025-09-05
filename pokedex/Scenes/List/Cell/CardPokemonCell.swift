@@ -80,30 +80,30 @@ class CardPokemonCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with pokemon: Pokemon) {
+    func configure(with pokemon: Pokemon, pokeDetail: PokemonDetail) {
         nameLabel.text = pokemon.name
         pokemonImage.loadImage(urlString: pokemon.pokemonImage)
-        displayPokemonTypeButtons(typeOfPokemon: pokemon)
-        updateBackgroundColorByType(pokemon: pokemon)
+        displayPokemonTypeButtons(typeOfPokemon: pokeDetail)
+        updateBackgroundColorByType(pokemon: pokeDetail.types)
     }
     
-    func displayPokemonTypeButtons(typeOfPokemon: Pokemon) {
+    func displayPokemonTypeButtons(typeOfPokemon: PokemonDetail) {
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        typeOfPokemon.pokemonType.forEach { typePokemon in
-            let eachButton = setupRadiusButton(with: typePokemon.capitalized)
+        typeOfPokemon.types.forEach { typePokemon in
+            let eachButton = setupRadiusButton(with: typePokemon.rawValue)
             stackView.addArrangedSubview(eachButton)
         }
     }
     
     func setupRadiusButton(with typePokemon: String) -> RadiusButton {
         let typeView = RadiusButton()
-        typeView.buttonType.setTitle(typePokemon, for: .normal)
+        typeView.buttonType.setTitle(typePokemon.capitalized, for: .normal)
         typeView.buttonType.backgroundColor = .white.withAlphaComponent(0.2)
         return typeView
     }
     
-    func updateBackgroundColorByType(pokemon: Pokemon) {
-        guard let firstType = pokemon.pokemonType.first,
+    func updateBackgroundColorByType(pokemon: [PokemonType]) {
+        guard let firstType = pokemon.first?.rawValue,
               let pokemonType = PokemonType(rawValue: firstType.lowercased()) else { return }
 
         contentView.backgroundColor = pokemonType.getColor()
