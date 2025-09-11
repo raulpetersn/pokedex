@@ -16,9 +16,8 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBackButton()
+        setupDelegates()
         viewModel.delegate = self
-        detailView.collectionView.delegate = self
-        detailView.collectionView.dataSource = self
         viewModel.fetchPokemonWeakness(pokemonType: pokemonWeak)
         detailView.setupTypePill(pokemon: pokemonWeak)
     }
@@ -36,6 +35,14 @@ class DetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func setupDelegates() {
+        detailView.collectionView.delegate = self
+        detailView.collectionView.dataSource = self
+        
+        detailView.tableView.dataSource = self
+        detailView.tableView.dataSource = self
+    }
+    
     private func setupBackButton() {
         let attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: UIColor.red,
@@ -44,6 +51,14 @@ class DetailViewController: UIViewController {
         navigationController?.navigationBar.titleTextAttributes = attributes
     }
     
+}
+
+extension DetailViewController: DetailViewModelDelegate {
+    func didUpdatePokemonDetails() {
+        DispatchQueue.main.async {
+            self.detailView.collectionView.reloadData()
+        }
+    }
 }
 
 extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -78,10 +93,25 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
 }
 
-extension DetailViewController: DetailViewModelDelegate {
-    func didUpdatePokemonDetails() {
-        DispatchQueue.main.async {
-            self.detailView.collectionView.reloadData()
+extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 3
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailEvolutionCell.identifier, for: indexPath) as? DetailEvolutionCell else {
+            return UITableViewCell()
         }
-    }    
+        
+        cell.configureCell()
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 120
+    }
+
+    
+    
 }

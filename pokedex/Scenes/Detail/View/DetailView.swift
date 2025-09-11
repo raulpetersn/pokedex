@@ -130,8 +130,18 @@ class DetailView: UIView {
     lazy var evolutionsLbl: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = ""
+        label.text = "Evoluções"
+        label.font = UIFont.systemFont(ofSize: 18)
         return label
+    }()
+    
+    lazy var tableView = {
+        let table = UITableView()
+        table.translatesAutoresizingMaskIntoConstraints = false
+        table.register(DetailEvolutionCell.self, forCellReuseIdentifier: DetailEvolutionCell.identifier)
+        table.separatorStyle = .none
+        table.rowHeight = 120
+        return table
     }()
     
     override init(frame: CGRect) {
@@ -157,6 +167,8 @@ class DetailView: UIView {
         aboutView.addSubview(stackViewRight)
         bottomView.addSubview(weaknessLabel)
         bottomView.addSubview(collectionView)
+        bottomView.addSubview(evolutionsLbl)
+        bottomView.addSubview(tableView)
 
         setupConstrains()
         attributeWeight.translatesAutoresizingMaskIntoConstraints = false
@@ -217,7 +229,15 @@ class DetailView: UIView {
             collectionView.topAnchor.constraint(equalTo: weaknessLabel.bottomAnchor),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            collectionView.heightAnchor.constraint(equalToConstant: 144)
+            collectionView.heightAnchor.constraint(equalToConstant: 144),
+            
+            evolutionsLbl.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 24),
+            evolutionsLbl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            
+            tableView.topAnchor.constraint(equalTo: evolutionsLbl.bottomAnchor, constant: 24),
+            tableView.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
+            tableView.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -16),
+            tableView.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor)
         ])
     }
         
