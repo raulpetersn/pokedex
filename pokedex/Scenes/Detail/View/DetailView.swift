@@ -39,8 +39,6 @@ class DetailView: UIView {
         return label
     }()
     
-    let pokemonWeaknessType = PillView()
-    
     lazy var stackViewPokemonType: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -154,7 +152,6 @@ class DetailView: UIView {
     }
   
     func setupView() {
-        pokemonWeaknessType.translatesAutoresizingMaskIntoConstraints = false
         addSubview(contentView)
         contentView.addSubview(scrollView)
         scrollView.addSubview(bottomView)
