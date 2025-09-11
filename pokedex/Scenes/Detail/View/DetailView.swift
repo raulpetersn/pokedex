@@ -34,7 +34,6 @@ class DetailView: UIView {
     lazy var pokemonNumberLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Nº 001"
         label.font = UIFont.systemFont(ofSize: 16)
         return label
     }()
@@ -239,6 +238,8 @@ class DetailView: UIView {
     }
         
     func setupTypePill(pokemon: PokemonDetail) {
+        pokemonTitleLabel.text = pokemon.name.capitalized
+        pokemonNumberLabel.text = formatPokemonId(pokemon.id)
         pokemonImage.loadImage(urlString: pokemon.imageUrl)
         stackViewPokemonType.arrangedSubviews.forEach { $0.removeFromSuperview() }
         pokemon.types.forEach { typePokemon in
@@ -252,4 +253,9 @@ class DetailView: UIView {
         typeView.configure(with: typePokemon)
         return typeView
     }
+    
+    private func formatPokemonId(_ id: Int) -> String {
+        return String(format: "Nº %03d",id) 
+    }
+
 }

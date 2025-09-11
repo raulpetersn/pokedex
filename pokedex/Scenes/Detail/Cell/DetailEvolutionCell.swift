@@ -95,7 +95,6 @@ class DetailEvolutionCell: UITableViewCell {
             strokeView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 16),
             strokeView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             strokeView.heightAnchor.constraint(equalToConstant: 74),
-            strokeView.widthAnchor.constraint(equalToConstant: 196),
             
             borderRadiusView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             borderRadiusView.leadingAnchor.constraint(equalTo: strokeView.leadingAnchor),
