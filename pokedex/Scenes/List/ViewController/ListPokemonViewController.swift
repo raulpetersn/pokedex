@@ -27,8 +27,8 @@ class ListPokemonViewController: UIViewController {
     }
     
     
-    private func goToDetailView(pokemonDetail: PokemonDetail) {
-        let detailVC = DetailViewController(pokemonTypeWeakenss: pokemonDetail)
+    private func goToDetailView(pokemonInfo: PokemonInfo) {
+        let detailVC = DetailViewController(pokemonInfo: pokemonInfo)
         navigationController?.pushViewController(detailVC, animated: true)
         
     }
@@ -42,6 +42,15 @@ class ListPokemonViewController: UIViewController {
 // MARK: - ViewModel Delegate
 
 extension ListPokemonViewController: ListPokemonViewModelDelegate {
+    
+    func didUpdatePokemon(at index: Int) {
+        DispatchQueue.main.async {
+            let indexPath = IndexPath(row: index, section: 0)
+            self.listPokemonView.collectionView.reloadItems(at: [indexPath])
+        }
+        
+    }
+    
     func didUpdatePokemonList() {
            DispatchQueue.main.async {
                self.listPokemonView.collectionView.reloadData()
@@ -64,21 +73,16 @@ extension ListPokemonViewController: UICollectionViewDelegate, UICollectionViewD
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardPokemonCell.identifier, for: indexPath) as? CardPokemonCell else {
             return UICollectionViewCell()
         }
-     
-        let poke = viewModel.pokemon(at: indexPath.row)
-    
-        /// corrigir esse metodo esta crashando o app
-        if let details = self.viewModel.pokemonsDetails[poke.name] {
-            cell.configure(with: poke, pokeDetail: details)
-        }
+        
+        let pokemonInfo = viewModel.pokemon(at: indexPath.row)
+        cell.configure(pokeDetail: pokemonInfo)
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectRow = viewModel.pokemon(at: indexPath.row)
-        guard let selectedPokemonDetail = viewModel.pokemonsDetails[selectRow.name] else { return }
-        goToDetailView(pokemonDetail: selectedPokemonDetail)
+         let pokemonInfoAtRow = viewModel.pokemons[indexPath.row]
+        goToDetailView(pokemonInfo: pokemonInfoAtRow)
     }
     
     

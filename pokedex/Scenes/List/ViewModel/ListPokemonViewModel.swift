@@ -8,66 +8,60 @@
 protocol ListPokemonViewModelDelegate: AnyObject {
     func didUpdatePokemonList()
     func didFailWithError(_ message: String)
+    func didUpdatePokemon(at index: Int)
 }
 
 class ListPokemonViewModel {
-
     weak var delegate: ListPokemonViewModelDelegate?
     private let service = PokemonService()
-    private(set) var pokemons: [Pokemon] = []
-    private(set) var pokemonsDetails: [String: PokemonDetail] = [:]
-    private(set) var atIndex: Int = 0
+    private(set) var pokemons: [PokemonInfo] = []
 
     func fetchPokemons() {
         service.fetchPokemonList { [weak self] result in
-            guard let self = self else { return}
+            guard let self = self else { return }
             switch result {
             case .success(let pokemons):
-                self.pokemons = pokemons
+                self.pokemons = pokemons.map { PokemonInfo(pokemon: $0) }
                 self.delegate?.didUpdatePokemonList()
-                self.filterPokemonType()
+                self.fetchPokemonTypes()
             case .failure(let error):
                 self.delegate?.didFailWithError(error.localizedDescription)
             }
         }
-      
     }
 
-    func filterPokemonType() {
-        for pokemon in pokemons {
-            fetchPokemonType(pokemonName: pokemon.name)
+    func fetchPokemonTypes() {
+        for (index, pokemon) in pokemons.enumerated() {
+            fetchPokemonType(at: index, pokemonName: pokemon.name)
         }
     }
     
-    func fetchPokemonType(pokemonName: String) {
-        service.fecthTypeOfPokemons(
-            completion: { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let response):
-                    let detail = response.toDomainModel()
-                    self.pokemonsDetails[pokemonName] = detail
-//                    self.handlePokemonDetail(with: response.toDomainModel())
-                    self.delegate?.didUpdatePokemonList()
-                case .failure(let error):
-                    print("deu ruim no servico de type \(error)")
-                }
-            }, with: pokemonName)
+    func fetchPokemonType(at index: Int, pokemonName: String) {
+        service.fecthTypeOfPokemons(completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let response):
+                self.handlePokemonDetail(response, at: index)
+            case .failure(let error):
+                print("Erro no serviço de type: \(error)")
+            }
+        }, with: pokemonName)
+    }
+
+    func handlePokemonDetail(_ detail: PokemonDetail, at index: Int) {
+        let info = PokemonInfo(pokemonDetail: detail)
+        pokemons[index] = info
+        delegate?.didUpdatePokemon(at: index)
     }
 
     func getTotalOfPokemons() -> Int {
         return pokemons.count
     }
     
-    func pokemon(at index: Int) -> Pokemon {
+    func pokemon(at index: Int) -> PokemonInfo {
         return pokemons[index]
     }
-    
-    func handlePokemonDetail(with pokemonDetail: PokemonDetail) {
-        let pokemonDetail = PokemonInfo(pokemonDetail: pokemonDetail)
-    }
 }
-
 
 struct PokemonInfo {
     let id: Int
@@ -84,5 +78,14 @@ struct PokemonInfo {
         self.weight = pokemonDetail.weight.description
         self.types = pokemonDetail.types
         self.imageUrl = pokemonDetail.imageUrl
+    }
+    
+    init(pokemon: Pokemon) {
+        self.id = 0
+        self.name = pokemon.name.capitalized
+        self.height = ""
+        self.weight = ""
+        self.types = []
+        self.imageUrl = ""
     }
 }

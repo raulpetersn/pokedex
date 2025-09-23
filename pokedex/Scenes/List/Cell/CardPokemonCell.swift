@@ -80,14 +80,14 @@ class CardPokemonCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with pokemon: Pokemon, pokeDetail: PokemonDetail) {
-        nameLabel.text = pokemon.name
-        pokemonImage.loadImage(urlString: pokemon.pokemonImage)
+    func configure(pokeDetail: PokemonInfo) {
+        nameLabel.text = pokeDetail.name
+        pokemonImage.loadImage(urlString: pokeDetail.imageUrl)
         displayPokemonTypeButtons(typeOfPokemon: pokeDetail)
         updateBackgroundColorByType(pokemon: pokeDetail.types)
     }
     
-    func displayPokemonTypeButtons(typeOfPokemon: PokemonDetail) {
+    func displayPokemonTypeButtons(typeOfPokemon: PokemonInfo) {
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         typeOfPokemon.types.forEach { typePokemon in
             let eachButton = setupRadiusButton(with: typePokemon.rawValue)
