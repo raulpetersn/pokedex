@@ -9,7 +9,6 @@ import UIKit
 
 class ListPokemonViewController: UIViewController {
     
-    private var pokemons: [Pokemon] = []
     let listPokemonView = ListPokemonView()
     private var viewModel = ListPokemonViewModel()
     
@@ -84,6 +83,4 @@ extension ListPokemonViewController: UICollectionViewDelegate, UICollectionViewD
          let pokemonInfoAtRow = viewModel.pokemons[indexPath.row]
         goToDetailView(pokemonInfo: pokemonInfoAtRow)
     }
-    
-    
 }
