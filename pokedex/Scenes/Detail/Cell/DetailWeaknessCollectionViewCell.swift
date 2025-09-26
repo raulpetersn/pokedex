@@ -1,5 +1,5 @@
 //
-//  PillTypeCell.swift
+//  DetailWeaknessCollectionViewCell.swift
 //  pokedex
 //
 //  Created by Rauls on 01/09/25.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-class PillTypeCell: UICollectionViewCell {
+class DetailWeaknessCollectionViewCell: UICollectionViewCell {
     
-    static let identifier = "PillTypeCell"
+    static let identifier = "DetailWeaknessCollectionViewCell"
 
     let pillView = PillView()
 
