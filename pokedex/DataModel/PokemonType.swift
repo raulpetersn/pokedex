@@ -86,7 +86,7 @@ enum PokemonType: String, Codable {
         }
     }
     
-    func getBackgroundImageType(withBackground: Bool = false) -> UIImage {
+    func getBackgroundImageType(withBackground: Bool = false, withoutBackground: Bool = false) -> UIImage {
         var imageString: String
         
         switch self {
@@ -112,6 +112,10 @@ enum PokemonType: String, Codable {
         
         if withBackground {
             imageString += "_color"
+        }
+        
+        if withoutBackground {
+            imageString += "_icon"
         }
         
         return UIImage(named: imageString) ?? UIImage()
