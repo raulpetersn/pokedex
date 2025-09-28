@@ -45,7 +45,6 @@ final class PokemonService {
         networkClient.fetch(from: urlType, decodeTo: PokemonWeaknessResponse.self) { result in
             switch result {
             case .success(let response):
-                print("caiu no servico de fraqueza \(response)")
                 completion(.success(response.damageRelation))
             case .failure(let error):
                 completion(.failure(error))

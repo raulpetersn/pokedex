@@ -15,32 +15,42 @@ class DetailViewModel {
     
     private let service = PokemonService()
     weak var delegate: DetailViewModelDelegate?
-    var detailPokemon: PokemonDetailWeakness? = nil
+    var detailPokemon: PokemonDetailWeakness = PokemonDetailWeakness.mock()
+    private(set) var pokemonDetailWeakness: [PokemonInfo] = []
+    var onWeaknessUpdate: ((CGFloat) -> Void)?
+    var getAmountOfPokemonType: CGFloat {
+        get { detailPokemon.weaknessType.count >= 3 ? 104.0 : 56.0 }
+    }
     
-    func fetchPokemonWeakness(pokemonType: PokemonDetail) {
-       
+    func fetchPokemonWeakness(pokemonType: PokemonInfo) {
         service.fetchWeaknessByTypePokemon(completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let pokemonWeakness):
-                print("deu bom no weak \(pokemonWeakness.doubleDamageFrom)")
-                let updatedPokemonWeakness = PokemonDetailWeakness(id: pokemonType.id,
-                                                  name: pokemonType.name,
-                                                  height: pokemonType.height.description,
-                                                  weight: pokemonType.weight.description,
-                                                  types: pokemonType.types,
-                                                  imageUrl: pokemonType.imageUrl,
-                                                  weaknessType: pokemonWeakness.doubleDamageFrom)
-                self.detailPokemon = updatedPokemonWeakness
-                self.delegate?.didUpdatePokemonDetails()
+                let updatedDetail = PokemonDetailWeakness(from: pokemonWeakness,
+                                                          basePokemon: pokemonType)
+                detailPokemon = updatedDetail
+                delegate?.didUpdatePokemonDetails()
+                onWeaknessUpdate?(getAmountOfPokemonType)
             case .failure(let error):
-                print("deu ruim no weak \(error)")
+                print("erro no endpoint fetchWeaknessByTypePokemon \(error)")
             }
-        }, with: pokemonType.types.first?.rawValue ?? "poison")
+        }, with: pokemonType.types.first?.rawValue ?? "")
+    }
+    
+    func numberOfWeakness() -> Int {
+        if detailPokemon.weaknessType.count > 4 {
+            return 4
+        }
+        return detailPokemon.weaknessType.count
+    }
+    
+    func weaknessName(at index: Int) -> String {
+        return detailPokemon.weaknessType[index].name
     }
 }
 
-struct PokemonDetailWeakness {
+struct PokemonDetailWeakness: Decodable {
     let id: Int
     let name: String
     let height: String
@@ -48,21 +58,21 @@ struct PokemonDetailWeakness {
     let types: [PokemonType]
     let imageUrl: String
     let weaknessType: [DoubleDamageFrom]
-    
-    init(id: Int,
-         name: String,
-         height: String,
-         weight: String,
-         types: [PokemonType],
-         imageUrl: String,
-         weaknessType: [DoubleDamageFrom])
-    {
-        self.id = id
-        self.name = name.capitalized
-        self.height = height.description
-        self.weight = weight.description
-        self.types = types
-        self.imageUrl = imageUrl
-        self.weaknessType = weaknessType
+
+    init(from response: TypeWeaknessResponse?, basePokemon: PokemonInfo) {
+        self.id = basePokemon.id
+        self.name = basePokemon.name.capitalized
+        self.height = basePokemon.height.description
+        self.weight = basePokemon.weight.description
+        self.types = basePokemon.types
+        self.imageUrl = basePokemon.imageUrl
+        self.weaknessType = response?.doubleDamageFrom ?? []
     }
+    
+    static func mock() -> PokemonDetailWeakness {
+        let pokemon = Pokemon.mock()
+        let teste = PokemonInfo(pokemon: pokemon)
+        return PokemonDetailWeakness(from: nil, basePokemon: teste)
+    }
+    
 }

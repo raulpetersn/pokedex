@@ -101,25 +101,15 @@ class DetailView: UIView {
         return label
     }()
     
-    lazy var stackViewWeakness: UIStackView = {
-        let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.distribution = .equalCentering
-        stack.backgroundColor = .red
-        stack.axis = .vertical
-        stack.spacing = 20
-        stack.alignment = .center
-        return stack
-    }()
-    
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 156, height: 36)
+        layout.itemSize = CGSize(width: 176, height: 36)
         layout.sectionInset = .init(top: 8, left: 0, bottom: 8, right: 0)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(PillTypeCell.self, forCellWithReuseIdentifier: PillTypeCell.identifier)
+        collectionView.register(DetailWeaknessCollectionViewCell.self, forCellWithReuseIdentifier: DetailWeaknessCollectionViewCell.identifier)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.isScrollEnabled = false
         
         return collectionView
     }()
@@ -135,9 +125,14 @@ class DetailView: UIView {
     lazy var tableView = {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
-        table.register(DetailEvolutionCell.self, forCellReuseIdentifier: DetailEvolutionCell.identifier)
+        table.register(DetailEvolutionTableViewCell.self, forCellReuseIdentifier: DetailEvolutionTableViewCell.identifier)
         table.separatorStyle = .none
-        table.rowHeight = 120
+        table.rowHeight = UITableView.automaticDimension
+        table.layer.cornerRadius = 8
+        table.layer.borderColor = UIColor.gray.cgColor
+        table.clipsToBounds = true
+        table.layer.borderWidth = 1
+        table.isScrollEnabled = false
         return table
     }()
     
@@ -150,6 +145,8 @@ class DetailView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
   
+    private var collectionViewHeight: NSLayoutConstraint!
+    
     func setupView() {
         addSubview(contentView)
         contentView.addSubview(scrollView)
@@ -164,14 +161,17 @@ class DetailView: UIView {
         bottomView.addSubview(weaknessLabel)
         bottomView.addSubview(collectionView)
         bottomView.addSubview(evolutionsLbl)
-        bottomView.addSubview(tableView)
+//        bottomView.addSubview(tableView)
 
         setupConstrains()
         attributeWeight.translatesAutoresizingMaskIntoConstraints = false
     }
     
     func setupConstrains() {
+       
+        collectionViewHeight = self.collectionView.heightAnchor.constraint(equalToConstant: 104)
         NSLayoutConstraint.activate([
+            collectionViewHeight,
             contentView.topAnchor.constraint(equalTo: topAnchor),
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -222,40 +222,35 @@ class DetailView: UIView {
             weaknessLabel.topAnchor.constraint(equalTo: aboutView.bottomAnchor, constant: 32),
             weaknessLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
                         
-            collectionView.topAnchor.constraint(equalTo: weaknessLabel.bottomAnchor),
+            collectionView.topAnchor.constraint(equalTo: weaknessLabel.bottomAnchor, constant: 8),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            collectionView.heightAnchor.constraint(equalToConstant: 144),
             
-            evolutionsLbl.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 24),
+            evolutionsLbl.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 8),
             evolutionsLbl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             
-            tableView.topAnchor.constraint(equalTo: evolutionsLbl.bottomAnchor, constant: 24),
-            tableView.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
-            tableView.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -16),
-            tableView.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor)
+//            tableView.topAnchor.constraint(equalTo: evolutionsLbl.bottomAnchor, constant: 16),
+//            tableView.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
+//            tableView.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -16),
+//            tableView.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -16)
         ])
     }
         
-    func setupTypePill(pokemon: PokemonDetail) {
+    func setupEvolutionsPills(pokemon: PokemonInfo) {
         pokemonTitleLabel.text = pokemon.name.capitalized
         pokemonNumberLabel.text = formatPokemonId(pokemon.id)
         pokemonImage.loadImage(urlString: pokemon.imageUrl)
-        stackViewPokemonType.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        pokemon.types.forEach { typePokemon in
-            let eachTypePill = setupPokemonTypePill(with: typePokemon.rawValue)
-            stackViewPokemonType.addArrangedSubview(eachTypePill)
-        }
-    }
-    
-    func setupPokemonTypePill(with typePokemon: String) -> PillView {
-        let typeView = PillView()
-        typeView.configure(with: typePokemon)
-        return typeView
+        stackViewPokemonType.setupStackViewPills(with: pokemon.types)
     }
     
     private func formatPokemonId(_ id: Int) -> String {
         return String(format: "Nº %03d",id) 
     }
-
+    
+    func updateCollectionViewHeight(_ newHeight: CGFloat) {
+        DispatchQueue.main.async {
+            self.collectionViewHeight?.constant = newHeight
+            self.collectionView.layoutIfNeeded()
+        }
+    }
 }

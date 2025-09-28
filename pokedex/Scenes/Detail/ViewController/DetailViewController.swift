@@ -7,27 +7,31 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {	
+class DetailViewController: UIViewController {
     
     let detailView = DetailView()
     private var viewModel = DetailViewModel()
-    private var pokemonWeak: PokemonDetail
+    private var pokemonInfo: PokemonInfo
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBackButton()
         setupDelegates()
         viewModel.delegate = self
-        viewModel.fetchPokemonWeakness(pokemonType: pokemonWeak)
-        detailView.setupTypePill(pokemon: pokemonWeak)
+        viewModel.onWeaknessUpdate = { [weak self] height in
+            guard let self = self else { return }
+            detailView.updateCollectionViewHeight(height)
+        }
+        viewModel.fetchPokemonWeakness(pokemonType: pokemonInfo)
+        detailView.setupEvolutionsPills(pokemon: pokemonInfo)
     }
     
     override func loadView() {
         view = detailView
     }
     
-    init(pokemonTypeWeakenss: PokemonDetail) {
-        self.pokemonWeak = pokemonTypeWeakenss
+    init(pokemonInfo: PokemonInfo) {
+        self.pokemonInfo = pokemonInfo
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -57,29 +61,31 @@ extension DetailViewController: DetailViewModelDelegate {
     func didUpdatePokemonDetails() {
         DispatchQueue.main.async {
             self.detailView.collectionView.reloadData()
+            self.detailView.tableView.reloadData()
         }
     }
 }
 
 extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.viewModel.detailPokemon?.weaknessType.count ?? 0
+        return self.viewModel.numberOfWeakness()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: PillTypeCell.identifier,
+            withReuseIdentifier: DetailWeaknessCollectionViewCell.identifier,
             for: indexPath
-        ) as? PillTypeCell else {
+        ) as? DetailWeaknessCollectionViewCell else {
             return UICollectionViewCell()
         }
-
-        let type = self.viewModel.detailPokemon?.weaknessType[indexPath.item].name ?? "poison"
+        
+        
+        let type = viewModel.weaknessName(at: indexPath.row)
         UIView.animate(withDuration: 0.3) {
             cell.pillView.layoutIfNeeded()
         }
         cell.configureCell(typeName: type, isLarge: true)
-
+        
         return cell
     }
     
@@ -99,19 +105,19 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailEvolutionCell.identifier, for: indexPath) as? DetailEvolutionCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailEvolutionTableViewCell.identifier, for: indexPath) as? DetailEvolutionTableViewCell else {
             return UITableViewCell()
         }
         
-        cell.configureCell()
+        let pokemonDetalhes = viewModel.detailPokemon
+        
+        cell.configureCell(pokemon: pokemonDetalhes)
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 120
+        return UITableView.automaticDimension
     }
-
-    
     
 }

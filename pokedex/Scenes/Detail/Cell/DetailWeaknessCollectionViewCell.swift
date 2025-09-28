@@ -20,7 +20,7 @@ class DetailWeaknessCollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             pillView.topAnchor.constraint(equalTo: contentView.topAnchor),
             pillView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            pillView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -64),
+            pillView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             pillView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
