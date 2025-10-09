@@ -14,7 +14,7 @@ class DetailEvolutionTableViewCell: UITableViewCell {
     lazy var strokeView: UIView = {
         let radiusView = UIView()
         radiusView.translatesAutoresizingMaskIntoConstraints = false
-        radiusView.layer.borderColor = UIColor.gray.cgColor
+        radiusView.layer.borderColor = UIColor(hex: "7F8CAA").cgColor
         radiusView.layer.borderWidth = 1
         radiusView.clipsToBounds = true
         radiusView.layer.cornerRadius = 40
@@ -68,7 +68,6 @@ class DetailEvolutionTableViewCell: UITableViewCell {
     
     let typeView = PillView()
 
-    
     lazy var stackViewPokemonType: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -104,7 +103,7 @@ class DetailEvolutionTableViewCell: UITableViewCell {
             strokeView.topAnchor.constraint(equalTo: contentView.topAnchor,constant: 16),
             strokeView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 16),
             strokeView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            strokeView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            strokeView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             strokeView.heightAnchor.constraint(equalToConstant: 74),
             
             borderRadiusView.topAnchor.constraint(equalTo: topAnchor, constant: 16),

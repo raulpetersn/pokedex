@@ -17,11 +17,7 @@ class DetailViewModel {
     weak var delegate: DetailViewModelDelegate?
     var detailPokemon: PokemonDetailWeakness = PokemonDetailWeakness.mock()
     private(set) var pokemonDetailWeakness: [PokemonInfo] = []
-    var onWeaknessUpdate: ((CGFloat) -> Void)?
-    var getAmountOfPokemonType: CGFloat {
-        get { detailPokemon.weaknessType.count >= 3 ? 104.0 : 56.0 }
-    }
-    
+
     func fetchPokemonWeakness(pokemonType: PokemonInfo) {
         service.fetchWeaknessByTypePokemon(completion: { [weak self] result in
             guard let self = self else { return }
@@ -31,7 +27,6 @@ class DetailViewModel {
                                                           basePokemon: pokemonType)
                 detailPokemon = updatedDetail
                 delegate?.didUpdatePokemonDetails()
-                onWeaknessUpdate?(getAmountOfPokemonType)
             case .failure(let error):
                 print("erro no endpoint fetchWeaknessByTypePokemon \(error)")
             }
