@@ -9,17 +9,13 @@ import UIKit
 
 class DetailView: UIView {
     
-    lazy var contentView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
     lazy var scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
         scroll.layer.cornerRadius = 24
         scroll.showsHorizontalScrollIndicator = false
+        scroll.backgroundColor = .white
+        scroll.clipsToBounds = false
         return scroll
     }()
     
@@ -42,17 +38,14 @@ class DetailView: UIView {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.distribution = .fillProportionally
-    
         return stack
     }()
     
-    lazy var bottomView: UIView = {
+    lazy var contentView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .white
         view.layer.cornerRadius = 24
-        view.clipsToBounds = true
-        view.layer.masksToBounds = true
         return view
     }()
     
@@ -60,6 +53,7 @@ class DetailView: UIView {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.image = UIImage(named: "koffing")
+        image.layer.masksToBounds = true
         return image
     }()
 
@@ -103,7 +97,7 @@ class DetailView: UIView {
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 176, height: 36)
+        layout.itemSize = CGSize(width: 168, height: 36)
         layout.sectionInset = .init(top: 8, left: 0, bottom: 8, right: 0)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -128,11 +122,13 @@ class DetailView: UIView {
         table.register(DetailEvolutionTableViewCell.self, forCellReuseIdentifier: DetailEvolutionTableViewCell.identifier)
         table.separatorStyle = .none
         table.rowHeight = UITableView.automaticDimension
+        table.estimatedRowHeight = UITableView.automaticDimension
         table.layer.cornerRadius = 8
-        table.layer.borderColor = UIColor.gray.cgColor
+        table.layer.borderColor = UIColor(hex: "7F8CAA").cgColor
         table.clipsToBounds = true
         table.layer.borderWidth = 1
         table.isScrollEnabled = false
+        table.allowsSelection = false
         return table
     }()
     
@@ -145,65 +141,62 @@ class DetailView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
   
-    private var collectionViewHeight: NSLayoutConstraint!
+    var collectionViewHeight: NSLayoutConstraint!
+    var tableViewHeightConstraint: NSLayoutConstraint!
     
-    func setupView() {
-        addSubview(contentView)
-        contentView.addSubview(scrollView)
-        scrollView.addSubview(bottomView)
-        bottomView.addSubview(pokemonTitleLabel)
-        bottomView.addSubview(pokemonNumberLabel)
+    private func setupView() {
+        attributeWeight.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(scrollView)
+        scrollView.addSubview(contentView)
+     
+        contentView.addSubview(pokemonTitleLabel)
+        contentView.addSubview(pokemonNumberLabel)
         contentView.addSubview(pokemonImage)
-        bottomView.addSubview(stackViewPokemonType)
-        bottomView.addSubview(aboutView)
+        contentView.addSubview(stackViewPokemonType)
+        contentView.addSubview(aboutView)
         aboutView.addSubview(stackViewLeft)
         aboutView.addSubview(stackViewRight)
-        bottomView.addSubview(weaknessLabel)
-        bottomView.addSubview(collectionView)
-        bottomView.addSubview(evolutionsLbl)
-//        bottomView.addSubview(tableView)
+        contentView.addSubview(weaknessLabel)
+        contentView.addSubview(collectionView)
+        contentView.addSubview(evolutionsLbl)
+        contentView.addSubview(tableView)
 
         setupConstrains()
-        attributeWeight.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    func setupConstrains() {
-       
-        collectionViewHeight = self.collectionView.heightAnchor.constraint(equalToConstant: 104)
+    private func setupConstrains() {
+        
+        tableViewHeightConstraint = tableView.heightAnchor.constraint(equalToConstant: 300)
+        collectionViewHeight = collectionView.heightAnchor.constraint(equalToConstant: 104)
+        
         NSLayoutConstraint.activate([
-            collectionViewHeight,
-            contentView.topAnchor.constraint(equalTo: topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
-
-            scrollView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.55),
-            scrollView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            scrollView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: widthAnchor),
+            contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 2),
+        
+            pokemonTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            pokemonTitleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
 
-            bottomView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            bottomView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            bottomView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            bottomView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            bottomView.widthAnchor.constraint(equalTo: widthAnchor),
-            bottomView.heightAnchor.constraint(equalTo: heightAnchor),
-            
-            pokemonTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            pokemonTitleLabel.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 16),
-         
             pokemonNumberLabel.topAnchor.constraint(equalTo: pokemonTitleLabel.bottomAnchor, constant: 8),
-            pokemonNumberLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
+            pokemonNumberLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
-            pokemonImage.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 144),
-            pokemonImage.centerXAnchor.constraint(equalTo: bottomView.centerXAnchor),
+            pokemonImage.bottomAnchor.constraint(equalTo: pokemonTitleLabel.topAnchor, constant: 20),
+            pokemonImage.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             pokemonImage.widthAnchor.constraint(equalToConstant: 154),
             pokemonImage.heightAnchor.constraint(equalToConstant: 154),
                         
             stackViewPokemonType.heightAnchor.constraint(equalToConstant: 40),
             stackViewPokemonType.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -136),
             stackViewPokemonType.topAnchor.constraint(equalTo: pokemonNumberLabel.bottomAnchor, constant: 16),
-            stackViewPokemonType.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
+            stackViewPokemonType.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
 
             aboutView.topAnchor.constraint(equalTo: stackViewPokemonType.bottomAnchor, constant: 16),
             aboutView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
@@ -220,19 +213,20 @@ class DetailView: UIView {
             stackViewRight.widthAnchor.constraint(equalToConstant: 154),
             
             weaknessLabel.topAnchor.constraint(equalTo: aboutView.bottomAnchor, constant: 32),
-            weaknessLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
+            weaknessLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
                         
             collectionView.topAnchor.constraint(equalTo: weaknessLabel.bottomAnchor, constant: 8),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            collectionViewHeight,
             
             evolutionsLbl.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 8),
             evolutionsLbl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             
-//            tableView.topAnchor.constraint(equalTo: evolutionsLbl.bottomAnchor, constant: 16),
-//            tableView.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
-//            tableView.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -16),
-//            tableView.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -16)
+            tableView.topAnchor.constraint(equalTo: evolutionsLbl.bottomAnchor, constant: 16),
+            tableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            tableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            tableViewHeightConstraint,
         ])
     }
         
@@ -246,11 +240,16 @@ class DetailView: UIView {
     private func formatPokemonId(_ id: Int) -> String {
         return String(format: "Nº %03d",id) 
     }
+
     
-    func updateCollectionViewHeight(_ newHeight: CGFloat) {
-        DispatchQueue.main.async {
-            self.collectionViewHeight?.constant = newHeight
-            self.collectionView.layoutIfNeeded()
-        }
+    func updateTableAndCollectionHeight() {
+        tableView.layoutIfNeeded()
+        collectionView.layoutIfNeeded()
+        
+        let tableContentHeight = tableView.contentSize.height
+        let collectionContentHeight = collectionView.contentSize.height
+        tableViewHeightConstraint.constant = tableContentHeight
+        collectionViewHeight.constant = collectionContentHeight
     }
+    
 }

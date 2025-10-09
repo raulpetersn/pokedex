@@ -18,10 +18,6 @@ class DetailViewController: UIViewController {
         setupBackButton()
         setupDelegates()
         viewModel.delegate = self
-        viewModel.onWeaknessUpdate = { [weak self] height in
-            guard let self = self else { return }
-            detailView.updateCollectionViewHeight(height)
-        }
         viewModel.fetchPokemonWeakness(pokemonType: pokemonInfo)
         detailView.setupEvolutionsPills(pokemon: pokemonInfo)
     }
@@ -59,16 +55,19 @@ class DetailViewController: UIViewController {
 
 extension DetailViewController: DetailViewModelDelegate {
     func didUpdatePokemonDetails() {
-        DispatchQueue.main.async {
-            self.detailView.collectionView.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             self.detailView.tableView.reloadData()
+            self.detailView.collectionView.reloadData()
+            
+            self.detailView.updateTableAndCollectionHeight()
         }
     }
 }
 
 extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.viewModel.numberOfWeakness()
+        return viewModel.numberOfWeakness()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -109,9 +108,9 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let pokemonDetalhes = viewModel.detailPokemon
+        let pokemonInfoDetails = viewModel.detailPokemon
         
-        cell.configureCell(pokemon: pokemonDetalhes)
+        cell.configureCell(pokemon: pokemonInfoDetails)
         
         return cell
     }
