@@ -190,8 +190,8 @@ class DetailView: UIView {
             
             pokemonImage.bottomAnchor.constraint(equalTo: pokemonTitleLabel.topAnchor, constant: 20),
             pokemonImage.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            pokemonImage.widthAnchor.constraint(equalToConstant: 154),
-            pokemonImage.heightAnchor.constraint(equalToConstant: 154),
+            pokemonImage.widthAnchor.constraint(equalToConstant: 184),
+            pokemonImage.heightAnchor.constraint(equalToConstant: 184),
                         
             stackViewPokemonType.heightAnchor.constraint(equalToConstant: 40),
             stackViewPokemonType.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -136),
