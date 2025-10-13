@@ -235,6 +235,10 @@ class DetailView: UIView {
         pokemonNumberLabel.text = formatPokemonId(pokemon.id)
         pokemonImage.loadImage(urlString: pokemon.imageUrl)
         stackViewPokemonType.setupStackViewPills(with: pokemon.types)
+        if let poke = PokemonType(rawValue: (pokemon.types.first ?? .normal).rawValue) {
+            self.backgroundColor = poke.getColor()
+        }
+        
     }
     
     private func formatPokemonId(_ id: Int) -> String {
