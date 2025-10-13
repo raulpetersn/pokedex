@@ -30,6 +30,6 @@ class DetailWeaknessCollectionViewCell: UICollectionViewCell {
     }
 
     func configureCell(typeName: String, isLarge: Bool) {
-        pillView.configure(with: typeName, isLarge: isLarge)
+        pillView.configure(with: typeName, style: .normal(isLarge: isLarge))
     }
 }

@@ -42,14 +42,6 @@ class ListPokemonViewController: UIViewController {
 
 extension ListPokemonViewController: ListPokemonViewModelDelegate {
     
-    func didUpdatePokemon(at index: Int) {
-        DispatchQueue.main.async {
-            let indexPath = IndexPath(row: index, section: 0)
-            self.listPokemonView.collectionView.reloadItems(at: [indexPath])
-        }
-        
-    }
-    
     func didUpdatePokemonList() {
            DispatchQueue.main.async {
                self.listPokemonView.collectionView.reloadData()

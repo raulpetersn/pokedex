@@ -8,18 +8,13 @@
 import UIKit
 
 extension UIStackView {
-    
-    func setupStackViewPills(with pokemonTypes: [PokemonType], isPokemonType: Bool = false) {
-        arrangedSubviews.forEach { $0.removeFromSuperview() }
-        pokemonTypes.forEach { typePokemon in
-            let eachTypePill = setupPokemonTypePill(with: typePokemon.rawValue, isPokemonType: isPokemonType )
-            addArrangedSubview(eachTypePill)
-        }
-    }
-    
-    func setupPokemonTypePill(with typePokemon: String, isPokemonType: Bool) -> PillView {
-        let typeView = PillView()
-        typeView.configure(with: typePokemon, isFullSizePokemonTypePill: isPokemonType)
-        return typeView
-    }
+  
+    func setupStackViewPills(with pokemonTypes: [PokemonType], style: PillStyle = .normal(isLarge: false)) {
+           arrangedSubviews.forEach { $0.removeFromSuperview() }
+           pokemonTypes.forEach { type in
+               let pill = PillView()
+               pill.configure(with: type.rawValue, style: style)
+               addArrangedSubview(pill)
+           }
+       }
 }

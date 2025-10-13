@@ -8,7 +8,6 @@
 protocol ListPokemonViewModelDelegate: AnyObject {
     func didUpdatePokemonList()
     func didFailWithError(_ message: String)
-    func didUpdatePokemon(at index: Int)
 }
 
 class ListPokemonViewModel {
@@ -41,7 +40,8 @@ class ListPokemonViewModel {
             guard let self = self else { return }
             switch result {
             case .success(let response):
-                self.handlePokemonDetail(response, at: index)
+                self.handlePokemonDetail(response.toDomainModel(), at: index)
+                delegate?.didUpdatePokemonList()
             case .failure(let error):
                 print("Erro no serviço de type: \(error)")
             }
@@ -51,7 +51,6 @@ class ListPokemonViewModel {
     func handlePokemonDetail(_ detail: PokemonDetail, at index: Int) {
         let info = PokemonInfo(pokemonDetail: detail)
         pokemons[index] = info
-        delegate?.didUpdatePokemon(at: index)
     }
 
     func getTotalOfPokemons() -> Int {

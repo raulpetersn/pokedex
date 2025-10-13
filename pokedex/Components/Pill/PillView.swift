@@ -23,9 +23,17 @@ enum PillViewSize: CGFloat {
     }
 }
 
+enum PillStyle {
+    case normal(isLarge: Bool)
+    case singleType
+    case multiType
+}
+
 class PillView: UIView {
     
     private var widthConstraint: NSLayoutConstraint!
+    private var heightConstraint: NSLayoutConstraint!
+    private var contentViewTrailingConstraint: NSLayoutConstraint!
     private var iconLeadingConstraint: NSLayoutConstraint!
     private var labelLeadingConstraint: NSLayoutConstraint!
     private var labelTrailingConstraint: NSLayoutConstraint!
@@ -41,9 +49,9 @@ class PillView: UIView {
     lazy var pokemonIconImage: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(named: "grass_color")
-        imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 12
+        imageView.image = UIImage(named: "grass_white")
+//        imageView.layer.masksToBounds = true
+//        imageView.layer.cornerRadius = 12
         return imageView
     }()
         
@@ -67,23 +75,33 @@ class PillView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with pokemonType: String, isLarge: Bool = false) {
-        guard let type = PokemonType(rawValue: pokemonType.lowercased()) else { return }
-        let size = PillViewSize.from(totalOfCharacters: pokemonType.count)
-        
-        pokemonTypeLbl.text = pokemonType.capitalized
-        widthConstraint.constant = isLarge ? 156 : size.rawValue
-        contentView.backgroundColor = type.getColor()
-        pokemonIconImage.image = type.getBackgroundImageType(withBackground: true)
-        
-        updateConstraintsForSize(isLarge: isLarge)
-    }
+    func configure(with pokemonType: String, style: PillStyle = .normal(isLarge: false)) {
+           guard let type = PokemonType(rawValue: pokemonType.lowercased()) else { return }
+           
+           let size = PillViewSize.from(totalOfCharacters: pokemonType.count)
+           pokemonTypeLbl.text = pokemonType.capitalized
+           contentView.backgroundColor = type.getColor()
+           
+           switch style {
+           case .normal(let isLarge):
+               widthConstraint.constant = isLarge ? 168 : size.rawValue
+               pokemonIconImage.image = type.getBackgroundImageType(withBackground: true)
+               updateConstraintsForSize(isLarge: isLarge)
+               
+           case .singleType:
+               setupEvolutionWeaknessPill()
+               pokemonIconImage.image = type.getBackgroundImageType(withoutBackground: true)
+               
+           case .multiType:
+               setupEvolutionWeaknessPillSmall()
+               pokemonIconImage.image = type.getBackgroundImageType(withoutBackground: true)
+           }
+       }
     
     private func setupView() {
         addSubview(contentView)
         addSubview(pokemonIconImage)
         addSubview(pokemonTypeLbl)
-        
         setupConstrains()   
     }
     
@@ -93,9 +111,10 @@ class PillView: UIView {
         labelLeadingConstraint = pokemonTypeLbl.leadingAnchor.constraint(equalTo: pokemonIconImage.trailingAnchor, constant: 8)
         labelTrailingConstraint = pokemonTypeLbl.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8)
         
+        heightConstraint = contentView.heightAnchor.constraint(equalToConstant: 36)
         NSLayoutConstraint.activate([
             widthConstraint,
-            contentView.heightAnchor.constraint(equalToConstant: 36),
+            heightConstraint,
             contentView.centerYAnchor.constraint(equalTo: centerYAnchor),
                 
             pokemonIconImage.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -119,5 +138,37 @@ class PillView: UIView {
            }
        }
     
+    private func setupEvolutionWeaknessPill() {
+        contentView.layer.cornerRadius = 8
+        heightConstraint.constant = 16
+        
+        pokemonTypeLbl.removeFromSuperview()
+        labelLeadingConstraint.isActive = false
+        labelTrailingConstraint.isActive = false
+        iconLeadingConstraint.isActive = false
+        widthConstraint.isActive = false
+    
+        NSLayoutConstraint.activate([
+            contentView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -40),
+            
+            pokemonIconImage.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+        ])
+    }
+    
+    private func setupEvolutionWeaknessPillSmall() {
+        contentView.layer.cornerRadius = 8
+        heightConstraint.constant = 16
+        widthConstraint.constant = 80
+        pokemonTypeLbl.removeFromSuperview()
+        labelLeadingConstraint.isActive = false
+        labelTrailingConstraint.isActive = false
+        iconLeadingConstraint.isActive = false
+        NSLayoutConstraint.activate([
+            heightConstraint,
+            widthConstraint,
+            pokemonIconImage.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+        ])
+    }
 }
-

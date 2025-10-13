@@ -138,10 +138,9 @@ class DetailEvolutionTableViewCell: UITableViewCell {
     }
     
     func configureCell(pokemon: PokemonDetailWeakness) {
-        pokemonNameLbl.text = "pokemon.name"
+        pokemonNameLbl.text = pokemon.name
         pokemonNumberLbl.text = pokemon.id.description
-        let single = pokemon.types.count == 1
-        let multiple = pokemon.types.count > 1
-        stackViewPokemonType.setupStackViewPills(with: pokemon.types, setupSinglePill: single, setupMultiplePill: multiple)
+        let pillStyle: PillStyle = pokemon.types.count == 1 ? .singleType : .multiType
+        stackViewPokemonType.setupStackViewPills(with: pokemon.types, style: pillStyle)
     }
 }
